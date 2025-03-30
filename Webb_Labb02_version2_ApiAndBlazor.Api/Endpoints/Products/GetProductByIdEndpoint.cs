@@ -1,11 +1,14 @@
 ﻿using FastEndpoints;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Entities;
+using Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces;
 
 namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
 {
 
-    public class GetProductByIdEndpoint : Endpoint<int, Product>
+    // Jag kunde inte använda int, för Swagger gav felmeddelande då.
+    //public class GetProductByIdEndpoint : Endpoint<int, Product> 
+    public class GetProductByIdEndpoint : Endpoint<GetProductByIdRequest, Product>
     {
         private readonly IProductRepository _repository;
 
@@ -28,9 +31,9 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
             });
         }
 
-        public override async Task HandleAsync(int id, CancellationToken ct)
+        public override async Task HandleAsync(GetProductByIdRequest req, CancellationToken ct)
         {
-            var product = await _repository.GetByIdAsync(id);
+            var product = await _repository.GetByIdAsync(req.Id);
 
             if(product is null)
             {

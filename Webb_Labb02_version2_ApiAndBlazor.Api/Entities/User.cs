@@ -20,6 +20,15 @@
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }
         public required string HomeAddress { get; set; }
-        public bool? IsAdmin { get; set; }
+
+
+        //public bool? IsAdmin { get; set; } <- Jag använder Role istället,
+        //för det blir mer flexibelt om jag behöver fler roller sen.
+        public required string Role { get; set; } = "user";
+
+        // Password är bara för kontroll.
+        // Jag vet att man aldrig ska lagra lösenord i klartext i riktiga projekt.
+        public required string Password { get; set; }
+        public required string PasswordHash { get; set; }
     }
 }
