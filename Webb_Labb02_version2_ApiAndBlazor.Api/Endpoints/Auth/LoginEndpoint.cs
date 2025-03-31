@@ -7,12 +7,18 @@ using Webb_Labb02_version2_ApiAndBlazor.Api.Data;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Models.ResponseDto;
 
+using Microsoft.AspNetCore.Identity;
+using Webb_Labb02_version2_ApiAndBlazor.Api.Entities;
+
+
+
 namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Auth
 {
     public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     {
         private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
+        private readonly PasswordHasher<User> _hasher = new();
 
         public LoginEndpoint(ApplicationDbContext context, IConfiguration config)
         {
@@ -28,7 +34,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Auth
             Summary(s =>
             {
                 s.Summary = "Loggar in användare och returnerar en JWT-token";
-                s.Description = "Kräver korrekt e-post och lösenord.";
+                s.Description = "Verifierar e-post och lösenord, och returnerar token vid korrekt inloggning.";
                 s.Response<LoginResponse>(200, "Inloggning lyckades, JWT-token returneras");
                 s.Response(401, "Ogiltig e-post eller lösenord");
             });
@@ -39,7 +45,16 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Auth
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == req.Email);
 
-            if (user == null || user.Password != req.Password)
+            if (user == null)
+            {
+                await SendUnauthorizedAsync(ct);
+                return;
+            }
+
+
+            var result = _hasher.VerifyHashedPassword(user, user.PasswordHash, req.Password);
+
+            if(result == PasswordVerificationResult.Failed)
             {
                 await SendUnauthorizedAsync(ct);
                 return;

@@ -7,6 +7,8 @@ using Webb_Labb02_version2_ApiAndBlazor.Api.Data;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces;
 
+using Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed;
+
 // För autentisering:
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -74,5 +76,13 @@ app.UseSwaggerGen();
 // För autentisering
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Lägger in data i databasen
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    DatabaseSeeder.Seed(db);
+}
+
 
 app.Run();
