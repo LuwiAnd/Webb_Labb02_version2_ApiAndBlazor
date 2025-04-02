@@ -32,6 +32,6 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Entities
         public int Quantity { get; set; }
 
         [Required]
-        public int Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

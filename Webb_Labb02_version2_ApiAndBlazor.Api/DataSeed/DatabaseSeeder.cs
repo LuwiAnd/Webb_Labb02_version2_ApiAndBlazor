@@ -113,6 +113,57 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed
                 });
             }
 
+
+
+
+
+
+
+            if (!db.Orders.Any())
+            {
+                var kalle = db.Users.FirstOrDefault(u => u.Email == "kalle@anka.se");
+                var milk = db.Products.FirstOrDefault(p => p.ProductName == "Mjölk");
+                var tv = db.Products.FirstOrDefault(p => p.ProductName == "TV");
+
+                if (kalle != null && milk != null && tv != null)
+                {
+                    var orderItems = new List<OrderItem>
+        {
+            new OrderItem
+            {
+                ProductID = milk.ProductID,
+                Quantity = 1,
+                Price = milk.Price
+            },
+            new OrderItem
+            {
+                ProductID = tv.ProductID,
+                Quantity = 1,
+                Price = tv.Price
+            }
+        };
+
+                    var total = orderItems.Sum(i => i.Price * i.Quantity);
+
+                    var order = new Order
+                    {
+                        UserID = kalle.UserID,
+                        OrderDate = DateTime.UtcNow,
+                        OrderStatus = "shipped",
+                        TotalAmount = total,
+                        OrderItems = orderItems
+                    };
+
+                    db.Orders.Add(order);
+                    db.SaveChanges();
+                }
+            }
+
+
+
+
+
+
             db.SaveChanges();
         }
 

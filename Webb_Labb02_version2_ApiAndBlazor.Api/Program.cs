@@ -129,6 +129,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 // För autentisering:
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

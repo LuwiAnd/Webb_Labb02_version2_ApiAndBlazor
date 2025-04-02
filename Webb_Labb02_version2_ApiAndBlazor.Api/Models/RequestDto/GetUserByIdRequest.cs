@@ -2,7 +2,7 @@
 
 namespace Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto
 {
-    public class GetProductByIdRequest
+    public class GetUserByIdRequest
     {
         [FromRoute]
         public int Id { get; set; }

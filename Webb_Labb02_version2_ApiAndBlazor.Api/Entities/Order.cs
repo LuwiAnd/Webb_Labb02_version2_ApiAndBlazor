@@ -27,5 +27,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Entities
 
         [Required]
         public string OrderStatus { get; set; } = string.Empty;
+
+        public decimal TotalAmount { get; set; }
     }
 }
