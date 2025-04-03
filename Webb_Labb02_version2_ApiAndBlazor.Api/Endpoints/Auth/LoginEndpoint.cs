@@ -79,12 +79,20 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Auth
             var audience = jwtSettings["Audience"];
             var expires = DateTime.UtcNow.AddMinutes(double.Parse(jwtSettings["ExpiresInMinutes"]!));
 
+            //var claims = new[]
+            //{
+            //    new Claim(JwtRegisteredClaimNames.Sub, user.UserID.ToString()),
+            //    new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
+            //    new Claim(ClaimTypes.Role, user.Role),
+            //};
+            // Bytte ut ovanstående mot nedanstående för att slippa det långa schema-namnet.
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserID.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? ""),
-                new Claim(ClaimTypes.Role, user.Role),
+                new Claim("sub", user.UserID.ToString()),
+                new Claim("email", user.Email ?? ""),
+                new Claim("role", user.Role)
             };
+
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

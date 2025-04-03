@@ -18,6 +18,7 @@ using NSwag.AspNetCore;
 using Webb_Labb02_version2_ApiAndBlazor.Api;
 
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Options;
 
 
 
@@ -161,6 +162,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+
+
 builder.Services.AddAuthorization();
 
 
@@ -181,6 +184,7 @@ app.UseAuthorization();
 app.UseFastEndpoints(c =>
 {
     c.Versioning.Prefix = "v";
+    c.Versioning.PrependToRoute = true;
     c.Serializer.Options.PropertyNamingPolicy = null;
 });
 
