@@ -10,5 +10,8 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces
         Task UpdateAsync(Product product);
         Task DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
+
+        Task<IEnumerable<Product>> SearchAsync(string? name, string? productNumber);
+
     }
 }

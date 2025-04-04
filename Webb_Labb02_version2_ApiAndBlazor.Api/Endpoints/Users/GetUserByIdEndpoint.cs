@@ -1,14 +1,15 @@
 ﻿using FastEndpoints;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Entities;
-using Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto;
+using Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces;
+
 using Webb_Labb02_version2_ApiAndBlazor.Api.Models.ResponseDto;
 
 namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
 {
     //[HttpGet("/users/{id}")]
-    //public class GetUserByIdEndpoint : Endpoint<GetUserByIdRequest, User>
     //public class GetUserByIdEndpoint : EndpointWithoutRequest
+    //public class GetUserByIdEndpoint : Endpoint<GetUserByIdRequest, User>
     public class GetUserByIdEndpoint : EndpointWithoutRequest<UserResponse>
     {
         private readonly IUnitOfWork _uow;
@@ -16,19 +17,20 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
         public GetUserByIdEndpoint(IUnitOfWork uow)
         {
             _uow = uow;
+            Console.WriteLine("GetUserByIdEndpoint loaded");
         }
 
         public override void Configure()
         {
-            Get("users/{id}");
+            Get("/users/{id}");
             //Post("users/getbyid");
             //AllowGet(); // <- detta var i en gammal FastEndpoint-version.
             
-            //Roles("admin");
-            AllowAnonymous(); // För testning.
+            Roles("admin");
+            //AllowAnonymous(); // För testning.
 
-            Version(1);
-            Options(x => x.WithName("GetUserById"));
+            //Options(x => x.WithName("GetUserById"));
+            //Version(1);
 
             Summary(s =>
             {
@@ -44,12 +46,14 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
             });
         }
 
-        /* Detta var innan jag bytte till EndpointWithoutRequest
+        /* Detta var innan jag bytte till EndpointWithoutRequest 
         public override async Task HandleAsync(GetUserByIdRequest req, CancellationToken ct)
         {
-            var user = await _uow.Users.GetByIdAsync(req.Id);
+            //var user = await _uow.Users.GetByIdAsync(req.Id);
+            var user = await _uow.Users.GetByIdAsync(req.id);
 
-            if(user is null)
+
+            if (user is null)
             {
                 await SendNotFoundAsync(ct);
                 return;
@@ -75,6 +79,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
         }
         */
 
+        
         public override async Task HandleAsync(CancellationToken ct)
         {
             var id = Route<int>("id");
@@ -99,6 +104,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
 
             await SendAsync(response, cancellation: ct);
         }
+        
 
 
     }

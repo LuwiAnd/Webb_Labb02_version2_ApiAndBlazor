@@ -1,5 +1,5 @@
 using FastEndpoints;
-//using FastEndpoints.Swagger;
+using FastEndpoints.Swagger;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -19,13 +19,74 @@ using Webb_Labb02_version2_ApiAndBlazor.Api;
 
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Options;
+using NSwag;
 
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+// För autentisering:
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"];
+
+// Kontroll för att hitta varför jag får felmeddelande när jag försöker köra min app.
+if (string.IsNullOrWhiteSpace(secretKey))
+    throw new Exception("JWT SecretKey saknas i konfigurationen!");
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidateAudience = true,
+        ValidAudience = jwtSettings["Audience"],
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+
+
+builder.Services.AddAuthorization();
+
+
 // Add services to the container.
-builder.Services.AddFastEndpoints();
+//builder.Services.AddFastEndpoints();
+
+
+// Lägg till FastEndpoints och Swagger
+//builder.Services
+//    .AddFastEndpoints()
+//    .SwaggerDocument(options =>
+//    {
+//        options.DocumentSettings = s =>
+//        {
+//            s.Title = "WebbLabb02 API";
+//            s.Version = "v1";
+//        };
+
+//        options.AddAuth("Bearer", new()
+//        {
+//            Type = NSwag.OpenApiSecuritySchemeType.Http,
+//            Scheme = "bearer",
+//            BearerFormat = "JWT",
+//            In = NSwag.OpenApiSecurityApiKeyLocation.Header,
+//            Name = "Authorization",
+//            Description = "Ange 'Bearer' följt av ditt JWT-token."
+//        });
+//    });
+
+
+
 
 
 //Byter ut builder.Services.SwaggerDocument(); mot nedanstående för att kunna testa JWT i Swagger:
@@ -76,7 +137,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 */
 
-
+/* AddSwaggerGen verkar vara från Swashbuckle.AspNetCore, som inte fungerar med FastEndpoints.
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
@@ -110,10 +171,42 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+*/
+
+builder.Services
+    .AddFastEndpoints()
+    .SwaggerDocument(config =>
+    {
+        config.DocumentSettings = s =>
+        {
+            s.DocumentName = "v1";
+            s.Title = "WebbLabb02 API";
+            s.Version = "v1";
+
+            s.AddAuth("Bearer", new()
+            {
+                Type = OpenApiSecuritySchemeType.Http,
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                BearerFormat = "JWT",
+                //In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Name = "Authorization"
+            });
+        };
+
+        
+    });
 
 
-
-
+        /*
+        config.AddAuth("Bearer", new()
+        {
+            Type = "http",
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            Name = "Authorization"
+        });
+        */
 
 
 
@@ -133,38 +226,12 @@ builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-// För autentisering:
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"];
-
-// Kontroll för att hitta varför jag får felmeddelande när jag försöker köra min app.
-if (string.IsNullOrWhiteSpace(secretKey))
-    throw new Exception("JWT SecretKey saknas i konfigurationen!");
-
-
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidateAudience = true,
-        ValidAudience = jwtSettings["Audience"],
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-    };
-});
 
 
 
-builder.Services.AddAuthorization();
+
+
+
 
 
 var app = builder.Build();
@@ -172,12 +239,14 @@ var app = builder.Build();
 
 
 
-
+/* Detta verkar använda Swashbuckle.AspNetCore.
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebbLabb02 API v1");
 });
+*/
+
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -186,7 +255,7 @@ app.UseFastEndpoints(c =>
     c.Versioning.Prefix = "v";
     c.Versioning.PrependToRoute = true;
     c.Serializer.Options.PropertyNamingPolicy = null;
-});
+}).UseSwaggerGen(); // UseSwaggerGen var enligt https://fast-endpoints.com/docs/swagger-support#configuration
 
 
 

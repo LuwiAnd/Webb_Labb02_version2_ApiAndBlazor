@@ -98,18 +98,18 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed
                 db.Products.AddRange(new List<Product>
                 {
                     new Product { 
-                        ProductNumber = 1001, 
-                        ProductName = "Mjölk", 
-                        ProductCategory = "Mejeri", 
+                        Number = 1001, 
+                        Name = "Mjölk", 
+                        Category = "Mejeri", 
                         Price = 15.90m, 
-                        ProductStatus = "Tillgänglig" 
+                        Status = "Tillgänglig" 
                     },
                     new Product { 
-                        ProductNumber = 2001, 
-                        ProductName = "TV", 
-                        ProductCategory = "Elektronik", 
+                        Number = 2001, 
+                        Name = "TV", 
+                        Category = "Elektronik", 
                         Price = 5999.00m, 
-                        ProductStatus = "Tillgänglig" }
+                        Status = "Tillgänglig" }
                 });
             }
 
@@ -122,8 +122,8 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed
             if (!db.Orders.Any())
             {
                 var kalle = db.Users.FirstOrDefault(u => u.Email == "kalle@anka.se");
-                var milk = db.Products.FirstOrDefault(p => p.ProductName == "Mjölk");
-                var tv = db.Products.FirstOrDefault(p => p.ProductName == "TV");
+                var milk = db.Products.FirstOrDefault(p => p.Name == "Mjölk");
+                var tv = db.Products.FirstOrDefault(p => p.Name == "TV");
 
                 if (kalle != null && milk != null && tv != null)
                 {
@@ -131,13 +131,13 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed
         {
             new OrderItem
             {
-                ProductID = milk.ProductID,
+                ID = milk.ID,
                 Quantity = 1,
                 Price = milk.Price
             },
             new OrderItem
             {
-                ProductID = tv.ProductID,
+                ID = tv.ID,
                 Quantity = 1,
                 Price = tv.Price
             }

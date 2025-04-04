@@ -1,40 +1,45 @@
 ﻿using FastEndpoints;
-using Webb_Labb02_version2_ApiAndBlazor.Api.Entities;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Models.ResponseDto;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces;
 
-namespace Webb_Labb02_version2_ApiAndBlazor.Endpoints.Orders
+namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Orders
 {
-    public class GetAllOrdersEndpoint : EndpointWithoutRequest<IEnumerable<OrderResponse>>
+    public class GetOrderByIdEndpoint : EndpointWithoutRequest<OrderResponse>
     {
         private readonly IUnitOfWork _uow;
 
-        public GetAllOrdersEndpoint(IUnitOfWork uow)
+        public GetOrderByIdEndpoint(IUnitOfWork uow)
         {
             _uow = uow;
         }
 
         public override void Configure()
         {
-            Get("orders");
-            //Roles("admin"); 
-            AllowAnonymous();
+            Get("/orders/{id}");
+            Roles("admin");
+
             Summary(s =>
             {
-                s.Summary = "Hämtar alla ordrar";
-                s.Description = "Endast admin får se samtliga ordrar.";
-                s.Response(200, "Lista med ordrar");
-                s.Response(401, "Ej inloggad");
-                s.Response(403, "Inte behörig");
+                s.Summary = "Hämtar en order med ID";
+                s.Description = "Endast admin kan hämta en specifik order.";
+                s.Params["id"] = "Order-ID som ska hämtas";
+                s.Response<OrderResponse>(200, "Order hittades");
+                s.Response(404, "Order hittades inte");
             });
         }
 
         public override async Task HandleAsync(CancellationToken ct)
         {
-            //var orders = await _uow.Orders.GetAllAsync(includeItems: true);
-            var orders = await _uow.Orders.GetAllAsync();
+            var id = Route<int>("id");
 
-            var response = orders.Select(order => new OrderResponse
+            var order = await _uow.Orders.GetByIdAsync(id);
+            if (order is null)
+            {
+                await SendNotFoundAsync(ct);
+                return;
+            }
+
+            var response = new OrderResponse
             {
                 OrderID = order.OrderID,
                 UserID = order.UserID,
@@ -47,10 +52,9 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Endpoints.Orders
                     Quantity = i.Quantity,
                     Price = i.Price
                 }).ToList()
-            }).ToList();
+            };
 
             await SendAsync(response, cancellation: ct);
         }
-
     }
 }

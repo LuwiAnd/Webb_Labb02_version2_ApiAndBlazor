@@ -51,5 +51,26 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
             _context.Products.Update(product);
             await _context.SaveChangesAsync();
         }
+
+
+        public async Task<IEnumerable<Product>> SearchAsync(string? name, string? productNumber)
+        {
+            var query = _context.Products.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                //query = query.Where(p => p.ProductName.Contains(name));
+                //query = query.Where(p => p.ProductName.ToLower().Contains(name.ToLower()));
+                query = query.Where(p => EF.Functions.Like(p.ProductName, $"%{name}%"));
+            }
+
+            if (int.TryParse(productNumber, out var parsedProductNumber))
+            {
+                query = query.Where(p => p.ProductNumber == parsedProductNumber);
+            }
+
+            return await query.ToListAsync();
+        }
+
     }
 }
