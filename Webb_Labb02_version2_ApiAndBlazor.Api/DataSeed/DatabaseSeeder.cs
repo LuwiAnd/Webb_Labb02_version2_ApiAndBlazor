@@ -82,6 +82,28 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed
                         Role = "user",
                         PhoneNumber = "0701112233",
                         HomeAddress = "Ankeborg 3"
+                    },
+                    new User
+                    {
+                        FirstName = "Ludwig",
+                        LastName = "Andersson",
+                        Email = "a",
+                        Password = "a",
+                        PasswordHash = "",
+                        Role = "admin",
+                        PhoneNumber = "0701112233",
+                        HomeAddress = "Gbg"
+                    },
+                    new User
+                    {
+                        FirstName = "Ludwig",
+                        LastName = "Andersson",
+                        Email = "u",
+                        Password = "u",
+                        PasswordHash = "",
+                        Role = "user",
+                        PhoneNumber = "0701112233",
+                        HomeAddress = "Gbg"
                     }
                 };
 
@@ -102,14 +124,17 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed
                         Name = "Mjölk", 
                         Category = "Mejeri", 
                         Price = 15.90m, 
-                        Status = "Tillgänglig" 
+                        //Status = "Tillgänglig" 
+                        Status = ProductStatus.Available
                     },
                     new Product { 
                         Number = 2001, 
                         Name = "TV", 
                         Category = "Elektronik", 
                         Price = 5999.00m, 
-                        Status = "Tillgänglig" }
+                        //Status = "Tillgänglig" 
+                        Status = ProductStatus.Available
+                    }
                 });
             }
 
@@ -128,26 +153,64 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed
                 if (kalle != null && milk != null && tv != null)
                 {
                     var orderItems = new List<OrderItem>
-        {
-            new OrderItem
-            {
-                ID = milk.ID,
-                Quantity = 1,
-                Price = milk.Price
-            },
-            new OrderItem
-            {
-                ID = tv.ID,
-                Quantity = 1,
-                Price = tv.Price
-            }
-        };
+                    {
+                        new OrderItem
+                        {
+                            ID = milk.ID,
+                            Quantity = 1,
+                            Price = milk.Price
+                        },
+                        new OrderItem
+                        {
+                            ID = tv.ID,
+                            Quantity = 1,
+                            Price = tv.Price
+                        }
+                    };
 
                     var total = orderItems.Sum(i => i.Price * i.Quantity);
 
                     var order = new Order
                     {
                         UserID = kalle.UserID,
+                        OrderDate = DateTime.UtcNow,
+                        OrderStatus = "shipped",
+                        TotalAmount = total,
+                        OrderItems = orderItems
+                    };
+
+                    db.Orders.Add(order);
+                    db.SaveChanges();
+                }
+
+
+                var ludwig = db.Users.FirstOrDefault(u => u.Email == "u");
+                //var milk = db.Products.FirstOrDefault(p => p.Name == "Mjölk");
+                //var tv = db.Products.FirstOrDefault(p => p.Name == "TV");
+
+                if (ludwig != null && milk != null && tv != null)
+                {
+                    var orderItems = new List<OrderItem>
+                    {
+                        new OrderItem
+                        {
+                            ProductID = milk.ID,
+                            Quantity = 1,
+                            Price = milk.Price
+                        },
+                        new OrderItem
+                        {
+                            ProductID = tv.ID,
+                            Quantity = 1,
+                            Price = tv.Price
+                        }
+                    };
+
+                    var total = orderItems.Sum(i => i.Price * i.Quantity);
+
+                    var order = new Order
+                    {
+                        UserID = ludwig.UserID,
                         OrderDate = DateTime.UtcNow,
                         OrderStatus = "shipped",
                         TotalAmount = total,

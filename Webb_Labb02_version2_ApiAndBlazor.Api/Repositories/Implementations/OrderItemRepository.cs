@@ -27,7 +27,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
             return await _context.OrderItems
                 .Include(oi => oi.Product)
                 .Include(oi => oi.Order)
-                .FirstOrDefaultAsync(oi => oi.OrderItemID == id);
+                .FirstOrDefaultAsync(oi => oi.ID == id);
         }
 
         public async Task AddAsync(OrderItem orderItem)

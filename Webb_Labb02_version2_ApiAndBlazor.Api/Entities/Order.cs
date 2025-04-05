@@ -14,7 +14,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Entities
             );
         */
         [Key]
-        public int OrderID { get; set; }
+        public int ID { get; set; }
         public List<OrderItem> OrderItems { get; set; } = new();
 
 

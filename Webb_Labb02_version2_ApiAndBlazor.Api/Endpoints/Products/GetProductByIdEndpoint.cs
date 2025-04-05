@@ -33,8 +33,8 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
 
         public override async Task HandleAsync(GetProductByIdRequest req, CancellationToken ct)
         {
-            //var product = await _repository.GetByIdAsync(req.Id);
-            var product = await _repository.GetByIdAsync(req.id);
+            var product = await _repository.GetByIdAsync(req.Id);
+            //var product = await _repository.GetByIdAsync(req.id);
 
             if(product is null)
             {
@@ -42,7 +42,13 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
                 return;
             }
 
-            await SendAsync(product, cancellation: ct);
+            //await SendAsync(product, cancellation: ct);
+            await SendCreatedAtAsync<GetProductByIdEndpoint>(
+                new { id = product.ID },
+                product,
+                cancellation: ct
+            );
+
         }
     }
 }

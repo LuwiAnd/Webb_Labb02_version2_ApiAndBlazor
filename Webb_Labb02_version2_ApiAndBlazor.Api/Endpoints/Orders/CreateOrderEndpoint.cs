@@ -56,7 +56,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Orders
                 var price = product.Price;
                 var orderItem = new OrderItem
                 {
-                    ProductID = product.ProductID,
+                    ProductID = product.ID,
                     Quantity = item.Quantity,
                     Price = price
                 };
@@ -82,7 +82,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Orders
 
             var response = new OrderResponse
             {
-                OrderID = order.OrderID,
+                OrderID = order.ID,
                 UserID = order.UserID,
                 OrderDate = order.OrderDate,
                 OrderStatus = order.OrderStatus,
@@ -95,7 +95,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Orders
                 }).ToList()
             };
 
-            await SendCreatedAtAsync($"/orders/{order.OrderID}", response, ct);
+            await SendCreatedAtAsync($"/orders/{order.ID}", response, ct);
 
         }
     }

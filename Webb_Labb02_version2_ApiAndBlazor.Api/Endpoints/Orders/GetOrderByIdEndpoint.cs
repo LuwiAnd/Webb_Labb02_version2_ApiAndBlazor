@@ -41,7 +41,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Orders
 
             var response = new OrderResponse
             {
-                OrderID = order.OrderID,
+                OrderID = order.ID,
                 UserID = order.UserID,
                 OrderDate = order.OrderDate,
                 OrderStatus = order.OrderStatus,

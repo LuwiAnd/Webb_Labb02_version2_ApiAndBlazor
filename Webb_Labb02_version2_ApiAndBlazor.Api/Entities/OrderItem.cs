@@ -18,7 +18,8 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Entities
         */
 
         [Key]
-        public int OrderItemID { get; set; }
+        //public int OrderItemID { get; set; }
+        public int ID { get; set; }
 
         [Required]
         public int OrderID { get; set; }

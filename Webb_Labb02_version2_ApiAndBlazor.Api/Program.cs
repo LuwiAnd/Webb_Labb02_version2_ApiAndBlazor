@@ -21,6 +21,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Options;
 using NSwag;
 
+using System.Text.Json.Serialization;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -228,8 +230,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 
-
-
+// För att visa min enum ProductStatus som text och inte som siffror i Swagger.
+builder.Services.AddControllers()
+    .AddJsonOptions(opt =>
+    {
+        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
 
 
 

@@ -24,11 +24,11 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Migrations
 
             modelBuilder.Entity("Webb_Labb02_version2_ApiAndBlazor.Api.Entities.Order", b =>
                 {
-                    b.Property<int>("OrderID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
@@ -43,7 +43,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Migrations
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderID");
+                    b.HasKey("ID");
 
                     b.HasIndex("UserID");
 
@@ -52,11 +52,11 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Migrations
 
             modelBuilder.Entity("Webb_Labb02_version2_ApiAndBlazor.Api.Entities.OrderItem", b =>
                 {
-                    b.Property<int>("OrderItemID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderItemID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<int>("OrderID")
                         .HasColumnType("int");
@@ -70,7 +70,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderItemID");
+                    b.HasKey("ID");
 
                     b.HasIndex("OrderID");
 
@@ -81,34 +81,33 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Migrations
 
             modelBuilder.Entity("Webb_Labb02_version2_ApiAndBlazor.Api.Entities.Product", b =>
                 {
-                    b.Property<int>("ProductID")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("ProductCategory")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductNumber")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductStatus")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ProductID");
+                    b.HasKey("ID");
 
                     b.ToTable("Products");
                 });

@@ -36,7 +36,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Endpoints.Orders
 
             var response = orders.Select(order => new OrderResponse
             {
-                OrderID = order.OrderID,
+                OrderID = order.ID,
                 UserID = order.UserID,
                 OrderDate = order.OrderDate,
                 OrderStatus = order.OrderStatus,

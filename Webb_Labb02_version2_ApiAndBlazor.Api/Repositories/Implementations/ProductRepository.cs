@@ -33,7 +33,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
 
         public async Task<bool> ExistsAsync(int id)
         {
-            return await _context.Products.AnyAsync(p => p.ProductID == id);
+            return await _context.Products.AnyAsync(p => p.ID == id);
         }
 
         public async Task<IEnumerable<Product>> GetAllAsync()
@@ -61,12 +61,12 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
             {
                 //query = query.Where(p => p.ProductName.Contains(name));
                 //query = query.Where(p => p.ProductName.ToLower().Contains(name.ToLower()));
-                query = query.Where(p => EF.Functions.Like(p.ProductName, $"%{name}%"));
+                query = query.Where(p => EF.Functions.Like(p.Name, $"%{name}%"));
             }
 
             if (int.TryParse(productNumber, out var parsedProductNumber))
             {
-                query = query.Where(p => p.ProductNumber == parsedProductNumber);
+                query = query.Where(p => p.Number == parsedProductNumber);
             }
 
             return await query.ToListAsync();

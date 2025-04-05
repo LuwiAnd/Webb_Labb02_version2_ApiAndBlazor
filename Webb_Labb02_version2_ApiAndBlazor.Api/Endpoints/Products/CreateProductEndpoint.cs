@@ -32,12 +32,12 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
         {
             Product product = new Product
             {
-                ProductNumber = req.ProductNumber,
-                ProductName = req.ProductName,
-                ProductDescription = req.ProductDescription,
+                Number = req.Number,
+                Name = req.Name,
+                Description = req.Description,
                 Price = req.Price,
-                ProductCategory = req.ProductCategory,
-                ProductStatus = req.ProductStatus
+                Category = req.Category,
+                Status = req.Status
             };
 
             await _repository.AddAsync(product);
