@@ -23,6 +23,10 @@ using NSwag;
 
 using System.Text.Json.Serialization;
 
+// För Blazor
+using Microsoft.AspNetCore.Cors;
+
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -240,6 +244,27 @@ builder.Services.AddControllers()
 
 
 
+// För Blazor:
+// Lägger till CORS för att kunna anropa mina API:er från Blazor.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorClient", policy =>
+    {
+        policy.WithOrigins("https://localhost:7272")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
+
+
+
+
+
+
+
+
 var app = builder.Build();
 
 
@@ -253,6 +278,8 @@ app.UseSwaggerUI(c =>
 });
 */
 
+// För Blazor:
+app.UseCors("AllowBlazorClient");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -275,6 +302,9 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     DatabaseSeeder.Seed(db);
 }
+
+
+
 
 
 app.Run();

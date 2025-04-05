@@ -28,7 +28,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Auth
 
         public override void Configure()
         {
-            Post("/login");
+            Post("/auth/login");
             AllowAnonymous();
 
             Summary(s =>

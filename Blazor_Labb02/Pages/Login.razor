@@ -1,0 +1,82 @@
+﻿@page "/login"
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IJSRuntime JS
+@inject AuthState AuthState
+@using Blazor_Labb02.BlazorModels.RequestDto
+@using Blazor_Labb02.BlazorModels.ResponseDto
+@using Blazor_Labb02.Services
+
+<h3>Logga in</h3>
+
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <div class="alert alert-danger">@ErrorMessage</div>
+}
+
+<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="email">E-post</label>
+        <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
+    </div>
+
+    <div class="mb-3">
+        <label for="password">Lösenord</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+    </div>
+
+    <button type="submit" class="btn btn-primary" disabled="@isSubmitting">Logga in</button>
+
+</EditForm>
+
+
+
+@code {
+    private LoginRequest loginModel = new();
+    private string ErrorMessage = "";
+    private bool isSubmitting = false;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+
+            await JS.InvokeVoidAsync(
+                "console.log",
+                $"Skickar loginModel: {System.Text.Json.JsonSerializer.Serialize(loginModel)}"
+            );
+
+            //var response = await Http.PostAsJsonAsync("https://localhost:7272/auth/login", loginModel);
+            var response = await Http.PostAsJsonAsync("auth/login", loginModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                if (result is not null)
+                {
+                    // Sparar token i localStorage
+                    await JS.InvokeVoidAsync("localStorage.setItem", "authToken", result.Token);
+
+                    // Uppdatera AuthState
+                    AuthState.SetToken(result.Token);
+
+                    Navigation.NavigateTo("/");
+                }
+            }
+            else
+            {
+                ErrorMessage = "Felaktig e-post eller lösenord.";
+            }
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "Något gick fel: " + ex.Message;
+        }
+
+        isSubmitting = false;
+    }
+
+}

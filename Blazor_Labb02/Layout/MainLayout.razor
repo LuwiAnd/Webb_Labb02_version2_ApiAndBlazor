@@ -1,0 +1,46 @@
+﻿@inherits LayoutComponentBase
+@inject IJSRuntime JS
+@using Blazor_Labb02.Helpers
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="" class="navbar-brand">Blazor_Labb02</a>
+            @if (!string.IsNullOrEmpty(UserRole))
+            {
+                <span class="text-white ms-auto">Inloggad som: @UserMail <strong>@UserRole</strong></span>
+            }
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+@code {
+    private string? UserRole;
+    private string? UserMail;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            UserRole = JwtHelper.GetRoleFromToken(token);
+            UserMail = JwtHelper.GetEmailFromToken(token);
+
+            StateHasChanged();
+        }
+        else
+        {
+            UserMail = "Ej inloggad";
+        }
+    }
+}
