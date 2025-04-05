@@ -156,13 +156,13 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.DataSeed
                     {
                         new OrderItem
                         {
-                            ID = milk.ID,
+                            ProductID = milk.ID,
                             Quantity = 1,
                             Price = milk.Price
                         },
                         new OrderItem
                         {
-                            ID = tv.ID,
+                            ProductID = tv.ID,
                             Quantity = 1,
                             Price = tv.Price
                         }
