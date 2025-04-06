@@ -1,0 +1,104 @@
+﻿@page "/products"
+@inject ProductService ProductService
+@inject AuthState AuthState
+@using Blazor_Labb02.Services
+@using Blazor_Labb02.BlazorModels.ResponseDto
+
+<h3>Alla produkter</h3>
+
+<EditForm Model="@searchModel" OnValidSubmit="@HandleSearch">
+    <DataAnnotationsValidator />
+    <div class="row mb-3">
+        <div class="col">
+            <InputText @bind-Value="searchModel.Name" class="form-control" placeholder="Sök namn" />
+        </div>
+        <div class="col">
+            <InputNumber @bind-Value="searchModel.ProductNumber" class="form-control" placeholder="Sök produktnummer" />
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" type="submit">Sök</button>
+            <button class="btn btn-secondary ms-2" type="button" @onclick="ClearSearch">Rensa</button>
+        </div>
+    </div>
+</EditForm>
+
+
+
+@if (string.IsNullOrWhiteSpace(AuthState.Role))
+{
+    <div class="alert alert-danger">
+        Du får inte visa innehållet i denna sida för att du inte är inloggad.
+    </div>
+}
+else if (products == null)
+{
+    <p>Laddar produkter...</p>
+}
+else if (!products.Any())
+{
+    <p>Inga produkter hittades.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var product in products)
+        {
+            <li class="list-group-item">
+                <strong>@product.Name</strong> – @product.Price kr<br />
+                @product.Description<br />
+                Kategori: @product.Category<br />
+                @* Status: @(product.IsDiscontinued ? "Utgått" : "Tillgänglig") Detta måste ändras *@
+                Status: @GetStatusText(product.Status)
+
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<ProductResponse>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(AuthState.Role))
+        {
+            products = await ProductService.GetAllProducts();
+        }
+    }
+
+
+    private string GetStatusText(ProductStatus status)
+    {
+        return status switch
+        {
+            ProductStatus.Available => "Tillgänglig",
+            ProductStatus.Discontinued => "Utgått ur sortimentet",
+            ProductStatus.OutOfStock => "Tillfälligt slut",
+            _ => "Okänd"
+        };
+    }
+
+
+    // Här lägger jag söklogiken.
+    // private List<ProductResponse>? products;
+    private SearchModel searchModel = new();
+
+    private async Task HandleSearch()
+    {
+        products = await ProductService.SearchProducts(searchModel.Name, searchModel.ProductNumber);
+    }
+
+    private async Task ClearSearch()
+    {
+        searchModel = new();
+        products = await ProductService.GetAllProducts();
+    }
+
+    public class SearchModel
+    {
+        public string? Name { get; set; }
+        public int? ProductNumber { get; set; }
+    }
+
+
+}
