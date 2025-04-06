@@ -14,7 +14,8 @@
     <div class="alert alert-danger">@ErrorMessage</div>
 }
 
-<EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+@* <EditForm Model="loginModel" OnValidSubmit="HandleLogin"> *@
+<EditForm Model="loginModel" OnSubmit="HandleLogin">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -41,6 +42,15 @@
 
     private async Task HandleLogin()
     {
+        Console.WriteLine("HandleLogin körs!");
+        Console.WriteLine("HandleLogin körs!");
+        Console.WriteLine("HandleLogin körs!");
+        Console.WriteLine("HandleLogin körs!");
+        Console.WriteLine("HandleLogin körs!");
+        Console.WriteLine("HandleLogin körs!");
+        Console.WriteLine("HandleLogin körs!");
+        Console.WriteLine("HandleLogin körs!");
+
         try
         {
 
@@ -63,7 +73,8 @@
                     // Uppdatera AuthState
                     AuthState.SetToken(result.Token);
 
-                    Navigation.NavigateTo("/");
+                    // await Task.Delay(100);
+                    Navigation.NavigateTo("/", forceLoad: true);
                 }
             }
             else
@@ -76,7 +87,7 @@
             ErrorMessage = "Något gick fel: " + ex.Message;
         }
 
-        isSubmitting = false;
+        isSubmitting = true;
     }
 
 }

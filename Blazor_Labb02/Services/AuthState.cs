@@ -21,6 +21,9 @@ public class AuthState
         Role = jwt.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
 
         NotifyStateChanged();
+
+        Console.WriteLine($"[SetToken] E-post: {Email}, Roll: {Role}");
+
     }
 
     public void Clear()
