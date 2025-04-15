@@ -1,10 +1,15 @@
-﻿using Webb_Labb02_version2_ApiAndBlazor.Api.Entities;
+﻿using Blazor_Labb02.SharedModels.Enums;
 
-namespace Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto
+namespace Blazor_Labb02.BlazorModels.RequestDto
 {
+    //public enum ProductStatus
+    //{
+    //    Available,
+    //    Discontinued,
+    //    OutOfStock
+    //}
     public class UpdateProductRequest
     {
-        //public string? ProductName { get; set; }
         public string? Name { get; set; }
         public string? Description { get; set; }
         public decimal? Price { get; set; }
@@ -12,3 +17,5 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto
         public ProductStatus? Status { get; set; }
     }
 }
+
+

@@ -1,4 +1,5 @@
 ﻿using Blazor_Labb02.BlazorModels.ResponseDto;
+using Blazor_Labb02.BlazorModels.RequestDto;
 using System.Net.Http.Json;
 
 namespace Blazor_Labb02.Services;
@@ -46,5 +47,48 @@ public class ProductService
 
         return new();
     }
+
+
+
+
+
+
+    //public async Task<ProductResponse?> GetByProductNumber(int productNumber)
+    //{
+    //    var response = await _http.GetAsync($"products/{productNumber}");
+    //    if (response.IsSuccessStatusCode)
+    //    {
+    //        return await response.Content.ReadFromJsonAsync<ProductResponse>();
+    //    }
+
+    //    return null;
+    //}
+
+    public async Task<ProductResponse?> GetByProductNumber(int productNumber)
+    {
+        var url = $"products/by-number/{productNumber}";
+        Console.WriteLine($"📡 Anropar API: {url}");
+
+        var response = await _http.GetAsync(url);
+
+        Console.WriteLine($"📥 HTTP-status: {response.StatusCode}");
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await response.Content.ReadFromJsonAsync<ProductResponse>();
+            return result;
+        }
+
+        return null;
+    }
+
+
+    public async Task UpdateProduct(int productId, UpdateProductRequest request)
+    {
+        var response = await _http.PutAsJsonAsync($"products/{productId}", request);
+        response.EnsureSuccessStatusCode();
+    }
+
+
 
 }

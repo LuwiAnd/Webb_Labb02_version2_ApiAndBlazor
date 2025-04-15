@@ -1,0 +1,98 @@
+﻿@page "/products/edit/{ProductNumber:int}"
+@inject ProductService ProductService
+@inject NavigationManager Navigation
+@inject AuthState AuthState
+@using Blazor_Labb02.BlazorModels.ResponseDto
+@using Blazor_Labb02.BlazorModels.RequestDto
+@using Blazor_Labb02.SharedModels.Enums;
+
+<h3>Redigera produkt</h3>
+
+@if (string.IsNullOrWhiteSpace(AuthState.Role) || AuthState.Role != "admin")
+{
+    <div class="alert alert-danger">
+        Du får inte visa denna sida eftersom du inte är admin.
+    </div>
+}
+else if (product == null)
+{
+    <p>Laddar produkt...</p>
+}
+else
+{
+    <EditForm Model="@product" OnValidSubmit="@UpdateProduct">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label>Produktnamn:</label>
+            <InputText class="form-control" @bind-Value="product.Name" />
+        </div>
+        <div class="mb-3">
+            <label>Beskrivning:</label>
+            <InputTextArea class="form-control" @bind-Value="product.Description" />
+        </div>
+        <div class="mb-3">
+            <label>Pris:</label>
+            <InputNumber class="form-control" @bind-Value="product.Price" />
+        </div>
+        <div class="mb-3">
+            <label>Kategori:</label>
+            <InputText class="form-control" @bind-Value="product.Category" />
+        </div>
+        <div class="mb-3">
+            <label>Status:</label>
+            <InputSelect class="form-control" @bind-Value="product.Status">
+                <option value="Available">Tillgänglig</option>
+                <option value="Discontinued">Utgått</option>
+                <option value="OutOfStock">Tillfälligt slut</option>
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Spara ändringar</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int ProductNumber { get; set; }
+    private ProductResponse? product;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine($"Initierar produktredigering för produktnummer: {ProductNumber}");
+
+        if (AuthState.Role == "admin")
+        {
+            product = await ProductService.GetByProductNumber(ProductNumber);
+
+            if (product == null)
+            {
+                Console.WriteLine("❌ Produkt hittades inte (product == null)");
+            }
+            else
+            {
+                Console.WriteLine($"✅ Produkt laddad: {product.Name} ({product.Id})");
+            }
+
+        }
+    }
+
+    private async Task UpdateProduct()
+    {
+        if (product is not null)
+        {
+            var updateRequest = new UpdateProductRequest
+                {
+                    Name = product.Name,
+                    Description = product.Description,
+                    Price = product.Price,
+                    Category = product.Category,
+                    Status = product.Status
+                };
+
+            await ProductService.UpdateProduct(product.Id, updateRequest);
+            Navigation.NavigateTo("/products");
+        }
+    }
+
+}

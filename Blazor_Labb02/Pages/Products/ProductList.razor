@@ -3,6 +3,7 @@
 @inject AuthState AuthState
 @using Blazor_Labb02.Services
 @using Blazor_Labb02.BlazorModels.ResponseDto
+@using Blazor_Labb02.SharedModels.Enums
 
 <h3>Alla produkter</h3>
 
@@ -38,7 +39,7 @@ else if (!products.Any())
 {
     <p>Inga produkter hittades.</p>
 }
-else
+else if(AuthState.Role == "admin")
 {
     <ul class="list-group">
         @foreach (var product in products)
@@ -48,11 +49,28 @@ else
                 @product.Description<br />
                 Kategori: @product.Category<br />
                 @* Status: @(product.IsDiscontinued ? "Utgått" : "Tillgänglig") Detta måste ändras *@
-                Status: @GetStatusText(product.Status)
-
+                Status: @GetStatusText(product.Status) <br />
+                <strong>Roll: @AuthState.Role </strong>
+                <button class="btn btn-secondary ms-2" type="button" @onclick="() => EditProduct(product.Number)">Redigera</button>
             </li>
         }
     </ul>
+}
+else
+{
+<ul class="list-group">
+    @foreach (var product in products)
+    {
+        <li class="list-group-item">
+            <strong>@product.Name</strong> – @product.Price kr<br />
+            @product.Description<br />
+            Kategori: @product.Category<br />
+            @* Status: @(product.IsDiscontinued ? "Utgått" : "Tillgänglig") Detta måste ändras *@
+            Status: @GetStatusText(product.Status) <br />
+            
+        </li>
+    }
+</ul>
 }
 
 @code {
@@ -100,5 +118,10 @@ else
         public int? ProductNumber { get; set; }
     }
 
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    public void EditProduct(int productNumber)
+    {
+        Navigation.NavigateTo($"/products/edit/{productNumber}");
+    }
 
 }

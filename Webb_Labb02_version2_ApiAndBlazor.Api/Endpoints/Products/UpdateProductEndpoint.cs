@@ -42,8 +42,8 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
             }
 
             // Endast uppdatera om värdet inte är null eller tomt
-            if (!string.IsNullOrWhiteSpace(req.ProductName))
-                product.Name = req.ProductName;
+            if (!string.IsNullOrWhiteSpace(req.Name))
+                product.Name = req.Name;
 
             if (!string.IsNullOrWhiteSpace(req.Description))
                 product.Description = req.Description;

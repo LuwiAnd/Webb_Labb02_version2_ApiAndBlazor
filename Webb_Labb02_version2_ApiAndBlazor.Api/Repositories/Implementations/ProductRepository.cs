@@ -72,5 +72,11 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
             return await query.ToListAsync();
         }
 
+        public async Task<Product?> GetByProductNumberAsync(int productNumber)
+        {
+            return await _context.Products.FirstOrDefaultAsync(p => p.Number == productNumber);
+        }
+
+
     }
 }

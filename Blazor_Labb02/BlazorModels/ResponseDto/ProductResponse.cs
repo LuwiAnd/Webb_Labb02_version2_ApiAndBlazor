@@ -1,11 +1,13 @@
-﻿namespace Blazor_Labb02.BlazorModels.ResponseDto;
+﻿using Blazor_Labb02.SharedModels.Enums;
 
-public enum ProductStatus
-{
-    Available,
-    Discontinued,
-    OutOfStock
-}
+namespace Blazor_Labb02.BlazorModels.ResponseDto;
+
+//public enum ProductStatus
+//{
+//    Available,
+//    Discontinued,
+//    OutOfStock
+//}
 public class ProductResponse
 {
     public int Id { get; set; }
@@ -17,4 +19,5 @@ public class ProductResponse
     //public bool IsDiscontinued { get; set; }
     //public string Status { get; set; } = "Available";
     public ProductStatus Status { get; set; } = ProductStatus.Available;
+
 }

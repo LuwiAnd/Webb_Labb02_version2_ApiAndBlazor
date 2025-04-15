@@ -13,5 +13,8 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces
 
         Task<IEnumerable<Product>> SearchAsync(string? name, string? productNumber);
 
+        Task<Product?> GetByProductNumberAsync(int productNumber);
+
+
     }
 }
