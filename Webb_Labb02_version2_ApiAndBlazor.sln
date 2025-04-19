@@ -5,7 +5,7 @@ VisualStudioVersion = 17.11.35219.272
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Webb_Labb02_version2_ApiAndBlazor.Api", "Webb_Labb02_version2_ApiAndBlazor.Api\Webb_Labb02_version2_ApiAndBlazor.Api.csproj", "{6EBF280F-A837-487A-93CF-510477D6CB11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blazor_Labb02", "Blazor_Labb02\Blazor_Labb02.csproj", "{152B4BDE-8BE7-4C0A-B238-F47D34E57B1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor_Labb02", "Blazor_Labb02\Blazor_Labb02.csproj", "{152B4BDE-8BE7-4C0A-B238-F47D34E57B1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

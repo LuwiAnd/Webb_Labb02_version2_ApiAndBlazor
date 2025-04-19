@@ -1,0 +1,61 @@
+﻿@page "/products/create"
+@inject ProductService ProductService
+@inject NavigationManager Navigation
+@inject AuthState AuthState
+@using Blazor_Labb02.BlazorModels.RequestDto
+@using Blazor_Labb02.SharedModels.Enums
+
+<h3>Skapa ny produkt</h3>
+
+@if (string.IsNullOrWhiteSpace(AuthState.Role) || AuthState.Role != "admin")
+{
+    <div class="alert alert-danger">Du är inte behörig att skapa produkter.</div>
+}
+else
+{
+    <EditForm Model="@newProduct" OnValidSubmit="@CreateProduct">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label>Produktnummer:</label>
+            <InputNumber class="form-control" @bind-Value="newProduct.Number" />
+        </div>
+        <div class="mb-3">
+            <label>Namn:</label>
+            <InputText class="form-control" @bind-Value="newProduct.Name" />
+        </div>
+        <div class="mb-3">
+            <label>Beskrivning:</label>
+            <InputTextArea class="form-control" @bind-Value="newProduct.Description" />
+        </div>
+        <div class="mb-3">
+            <label>Pris:</label>
+            <InputNumber class="form-control" @bind-Value="newProduct.Price" />
+        </div>
+        <div class="mb-3">
+            <label>Kategori:</label>
+            <InputText class="form-control" @bind-Value="newProduct.Category" />
+        </div>
+        <div class="mb-3">
+            <label>Status:</label>
+            <InputSelect class="form-control" @bind-Value="newProduct.Status">
+                <option value="Available">Tillgänglig</option>
+                <option value="Discontinued">Utgått</option>
+                <option value="OutOfStock">Tillfälligt slut</option>
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-success">Skapa</button>
+    </EditForm>
+}
+
+@code {
+    private ProductRequest newProduct = new();
+
+    private async Task CreateProduct()
+    {
+        await ProductService.CreateProduct(newProduct);
+        Navigation.NavigateTo("/products");
+    }
+}

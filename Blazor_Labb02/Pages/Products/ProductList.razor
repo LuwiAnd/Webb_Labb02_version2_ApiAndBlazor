@@ -1,11 +1,18 @@
 ﻿@page "/products"
 @inject ProductService ProductService
 @inject AuthState AuthState
+@inject IJSRuntime JS
 @using Blazor_Labb02.Services
 @using Blazor_Labb02.BlazorModels.ResponseDto
 @using Blazor_Labb02.SharedModels.Enums
 
 <h3>Alla produkter</h3>
+
+@if (AuthState.Role == "admin")
+{
+    <a href="/products/create" class="btn btn-success mb-3">+ Lägg till ny produkt</a>
+}
+
 
 <EditForm Model="@searchModel" OnValidSubmit="@HandleSearch">
     <DataAnnotationsValidator />
@@ -52,6 +59,7 @@ else if(AuthState.Role == "admin")
                 Status: @GetStatusText(product.Status) <br />
                 <strong>Roll: @AuthState.Role </strong>
                 <button class="btn btn-secondary ms-2" type="button" @onclick="() => EditProduct(product.Number)">Redigera</button>
+                <button class="btn btn-secondary ms-2" type="button" @onclick="() => DeleteProduct(product.Number)">Ta bort</button>
             </li>
         }
     </ul>
@@ -122,6 +130,25 @@ else
     public void EditProduct(int productNumber)
     {
         Navigation.NavigateTo($"/products/edit/{productNumber}");
+    }
+
+    private async Task DeleteProduct(int productId)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", "Är du säker på att du vill ta bort denna produkt?");
+        if (!confirm)
+        {
+            return;
+        }
+
+        try
+        {
+            await ProductService.DeleteProduct(productId);
+            products = await ProductService.GetAllProducts();
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine($"Fel vid borttagning: {ex.Message}");
+        }
     }
 
 }

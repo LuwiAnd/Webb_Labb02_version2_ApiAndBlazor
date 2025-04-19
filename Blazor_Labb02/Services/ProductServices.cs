@@ -7,10 +7,12 @@ namespace Blazor_Labb02.Services;
 public class ProductService
 {
     private readonly HttpClient _http;
+    private readonly AuthState _authState;
 
-    public ProductService(HttpClient http)
+    public ProductService(HttpClient http, AuthState authState)
     {
         _http = http;
+        _authState = authState;
     }
 
     public async Task<List<ProductResponse>> GetAllProducts()
@@ -85,10 +87,74 @@ public class ProductService
 
     public async Task UpdateProduct(int productId, UpdateProductRequest request)
     {
-        var response = await _http.PutAsJsonAsync($"products/{productId}", request);
+        var url = $"products/{productId}";
+        var token = _authState.Token;
+
+        var requestMessage = new HttpRequestMessage(HttpMethod.Put, url)
+        {
+            Content = JsonContent.Create(request)
+        };
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        var response = await _http.SendAsync(requestMessage);
+
+        Console.WriteLine($"Put-status: {response.StatusCode}");
+
+        response.EnsureSuccessStatusCode();
+
+        //Gammal kod:
+        //var response = await _http.PutAsJsonAsync($"products/{productId}", request);
+        //response.EnsureSuccessStatusCode();
+    }
+
+    //public async Task DeleteProduct(int productId)
+    public async Task DeleteProduct(int productNumber)
+    {
+        var token = _authState.Token;
+
+        //Console.WriteLine($"Försöker ta bort produkt med ID: {productId}");
+        Console.WriteLine($"Försöker ta bort produkt med nummer: {productNumber}");
+
+        //var request = new HttpRequestMessage(HttpMethod.Delete, $"products/{productId}");
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"products/by-number/{productNumber}");
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        var response = await _http.SendAsync(request);
+
+        Console.WriteLine($"DELETE-status: {response.StatusCode}");
+
         response.EnsureSuccessStatusCode();
     }
 
+
+    public async Task CreateProduct(ProductRequest request)
+    {
+        var token = _authState.Token;
+
+        var requestMessage = new HttpRequestMessage(HttpMethod.Post, "products")
+        {
+            Content = JsonContent.Create(request)
+        };
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            requestMessage.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        var response = await _http.SendAsync(requestMessage);
+
+        Console.WriteLine($"POST-status: {response.StatusCode}");
+
+        response.EnsureSuccessStatusCode();
+    }
 
 
 }
