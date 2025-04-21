@@ -20,10 +20,12 @@ else
         <div class="mb-3">
             <label>Produktnummer:</label>
             <InputNumber class="form-control" @bind-Value="newProduct.Number" />
+            <ValidationMessage For="@(() => newProduct.Number)" />
         </div>
         <div class="mb-3">
             <label>Namn:</label>
             <InputText class="form-control" @bind-Value="newProduct.Name" />
+            <ValidationMessage For="@(() => newProduct.Name)" />
         </div>
         <div class="mb-3">
             <label>Beskrivning:</label>
@@ -32,10 +34,12 @@ else
         <div class="mb-3">
             <label>Pris:</label>
             <InputNumber class="form-control" @bind-Value="newProduct.Price" />
+            <ValidationMessage For="@(() => newProduct.Price)" />
         </div>
         <div class="mb-3">
             <label>Kategori:</label>
             <InputText class="form-control" @bind-Value="newProduct.Category" />
+            <ValidationMessage For="@(() => newProduct.Category)" />
         </div>
         <div class="mb-3">
             <label>Status:</label>
@@ -44,6 +48,7 @@ else
                 <option value="Discontinued">Utgått</option>
                 <option value="OutOfStock">Tillfälligt slut</option>
             </InputSelect>
+            <ValidationMessage For="@(() => newProduct.Status)" />
         </div>
 
         <button type="submit" class="btn btn-success">Skapa</button>

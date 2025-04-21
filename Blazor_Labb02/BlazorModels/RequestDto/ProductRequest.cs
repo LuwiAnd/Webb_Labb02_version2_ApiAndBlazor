@@ -14,7 +14,7 @@ namespace Blazor_Labb02.BlazorModels.RequestDto
 
         public string? Description { get; set; }
 
-        [Range(0.01, 999999.99)]
+        [Range(0, 1_000_000_000, ErrorMessage = "Priset måste vara mellan 0 och en miljard!")]
         public decimal Price { get; set; }
 
         [Required]

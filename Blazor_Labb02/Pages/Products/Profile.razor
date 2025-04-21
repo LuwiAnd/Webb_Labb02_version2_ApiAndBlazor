@@ -1,0 +1,92 @@
+﻿@page "/profile"
+@inject AuthState AuthState
+@inject UserService UserService
+@inject NavigationManager Navigation
+@using Blazor_Labb02.BlazorModels.ResponseDto
+@using Blazor_Labb02.BlazorModels.RequestDto
+
+
+<h3>Min profil</h3>
+
+@if (string.IsNullOrWhiteSpace(AuthState.Email))
+{
+    <div class="alert alert-danger">
+        Du måste vara inloggad för att se denna sida.
+    </div>
+}
+else if (user == null)
+{
+    <p>Laddar användaruppgifter...</p>
+}
+else
+{
+    <EditForm Model="@user" OnValidSubmit="@UpdateUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label>Förnamn:</label>
+            <InputText class="form-control" @bind-Value="user.FirstName" />
+        </div>
+        <div class="mb-3">
+            <label>Efternamn:</label>
+            <InputText class="form-control" @bind-Value="user.LastName" />
+        </div>
+        <div class="mb-3">
+            <label>E-post:</label>
+            <InputText class="form-control" @bind-Value="user.Email" />
+        </div>
+        <div class="mb-3">
+            <label>Telefonnummer:</label>
+            <InputText class="form-control" @bind-Value="user.Phone" />
+        </div>
+        <div class="mb-3">
+            <label>Adress:</label>
+            <InputText class="form-control" @bind-Value="user.Address" />
+        </div>
+
+        <div class="mb-3">
+            <label>Roll:</label>
+            <InputText class="form-control" @bind-Value="user.Role" disabled />
+        </div>
+
+        <button class="btn btn-primary">Spara ändringar</button>
+    </EditForm>
+}
+
+
+@code {
+    private UserRequest? user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(AuthState.Email))
+        {
+            var loadedUser = await UserService.GetByEmail(AuthState.Email);
+            if (loadedUser != null)
+            {
+                user = new UserRequest
+                {
+                    Id = loadedUser.UserID,
+                    FirstName = loadedUser.FirstName,
+                    LastName = loadedUser.LastName,
+                    Email = loadedUser.Email,
+                    Phone = loadedUser.PhoneNumber,
+                    Address = loadedUser.HomeAddress,
+                    Role = loadedUser.Role
+                };
+            }
+        }
+    }
+
+
+    private async Task UpdateUser()
+    {
+        if (user is not null)
+        {
+            await UserService.UpdateMyProfile(user);
+            Navigation.NavigateTo("/");
+        }
+    }
+
+}

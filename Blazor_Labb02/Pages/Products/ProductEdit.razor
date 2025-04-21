@@ -27,6 +27,7 @@ else
         <div class="mb-3">
             <label>Produktnamn:</label>
             <InputText class="form-control" @bind-Value="product.Name" />
+            <ValidationMessage For="@(() => product.Name)" />
         </div>
         <div class="mb-3">
             <label>Beskrivning:</label>
@@ -35,10 +36,12 @@ else
         <div class="mb-3">
             <label>Pris:</label>
             <InputNumber class="form-control" @bind-Value="product.Price" />
+            <ValidationMessage For="@(() => product.Price)" />
         </div>
         <div class="mb-3">
             <label>Kategori:</label>
             <InputText class="form-control" @bind-Value="product.Category" />
+            <ValidationMessage For="@(() => product.Category)" />
         </div>
         <div class="mb-3">
             <label>Status:</label>
@@ -47,6 +50,7 @@ else
                 <option value="Discontinued">Utgått</option>
                 <option value="OutOfStock">Tillfälligt slut</option>
             </InputSelect>
+            <ValidationMessage For="@(() => product.Status)" />
         </div>
 
         <button type="submit" class="btn btn-primary">Spara ändringar</button>
@@ -67,11 +71,11 @@ else
 
             if (product == null)
             {
-                Console.WriteLine("❌ Produkt hittades inte (product == null)");
+                Console.WriteLine("Produkt hittades inte (product == null)");
             }
             else
             {
-                Console.WriteLine($"✅ Produkt laddad: {product.Name} ({product.Id})");
+                Console.WriteLine($"Produkt laddad: {product.Name} ({product.Id})");
             }
 
         }

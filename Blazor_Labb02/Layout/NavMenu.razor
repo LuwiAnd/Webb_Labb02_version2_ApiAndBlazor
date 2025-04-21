@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject AuthState AuthState
+@implements IDisposable
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">Blazor_Labb02</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -9,6 +12,18 @@
 
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
+
+        @if (!string.IsNullOrWhiteSpace(AuthState.Email))
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/profile">
+                    <span class="bi bi-person-circle" aria-hidden="true"></span> Min profil
+                </NavLink>
+            </div>
+        }
+
+
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
@@ -50,4 +65,15 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    protected override void OnInitialized()
+    {
+        AuthState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        AuthState.OnChange -= StateHasChanged;
+    }
+
 }

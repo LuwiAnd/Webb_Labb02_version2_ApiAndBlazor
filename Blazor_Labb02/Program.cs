@@ -16,6 +16,7 @@ builder.Services.AddScoped(
 
 builder.Services.AddScoped<AuthState>();
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<UserService>();
 
 
 await builder.Build().RunAsync();
