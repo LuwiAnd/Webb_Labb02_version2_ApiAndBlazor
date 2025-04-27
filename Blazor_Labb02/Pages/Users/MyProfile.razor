@@ -1,10 +1,8 @@
-﻿@page "/profile"
+﻿@page "/myprofile"
 @inject AuthState AuthState
 @inject UserService UserService
 @inject NavigationManager Navigation
-@using Blazor_Labb02.BlazorModels.ResponseDto
 @using Blazor_Labb02.BlazorModels.RequestDto
-
 
 <h3>Min profil</h3>
 
@@ -16,11 +14,11 @@
 }
 else if (user == null)
 {
-    <p>Laddar användaruppgifter...</p>
+    <p>Laddar din profil...</p>
 }
 else
 {
-    <EditForm Model="@user" OnValidSubmit="@UpdateUser">
+    <EditForm Model="@user" OnValidSubmit="@UpdateProfile">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -45,42 +43,32 @@ else
             <InputText class="form-control" @bind-Value="user.Address" />
         </div>
 
-        <div class="mb-3">
-            <label>Roll:</label>
-            <InputText class="form-control" @bind-Value="user.Role" disabled />
-        </div>
-
         <button class="btn btn-primary">Spara ändringar</button>
     </EditForm>
 }
-
 
 @code {
     private UserRequest? user;
 
     protected override async Task OnInitializedAsync()
     {
-        if (!string.IsNullOrWhiteSpace(AuthState.Email))
+        var myProfile = await UserService.GetMyProfile();
+        if (myProfile is not null)
         {
-            var loadedUser = await UserService.GetByEmail(AuthState.Email);
-            if (loadedUser != null)
-            {
-                user = new UserRequest
+            user = new UserRequest
                 {
-                    Id = loadedUser.UserID,
-                    FirstName = loadedUser.FirstName,
-                    LastName = loadedUser.LastName,
-                    Email = loadedUser.Email,
-                    Phone = loadedUser.PhoneNumber,
-                    Address = loadedUser.HomeAddress,
-                    Role = loadedUser.Role
+                    Id = myProfile.Id,
+                    FirstName = myProfile.FirstName,
+                    LastName = myProfile.LastName,
+                    Email = myProfile.Email,
+                    Phone = myProfile.Phone,
+                    Address = myProfile.Address,
+                    Role = myProfile.Role
                 };
-            }
         }
     }
 
-
-    private async Task UpdateUser()
+    private async Task UpdateProfile()
     {
         if (user is not null)
         {
@@ -88,5 +76,4 @@ else
             Navigation.NavigateTo("/");
         }
     }
-
 }

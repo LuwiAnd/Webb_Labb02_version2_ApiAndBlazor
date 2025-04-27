@@ -1,4 +1,6 @@
 ﻿@inject AuthState AuthState
+@inject NavigationManager Navigation
+
 @implements IDisposable
 
 <div class="top-row ps-3 navbar navbar-dark">
@@ -16,11 +18,30 @@
         @if (!string.IsNullOrWhiteSpace(AuthState.Email))
         {
             <div class="nav-item px-3">
-                <NavLink class="nav-link" href="/profile">
+                <NavLink class="nav-link" href="/myprofile">
                     <span class="bi bi-person-circle" aria-hidden="true"></span> Min profil
                 </NavLink>
             </div>
+
+            @* <div class="nav-item px-3">
+                <button class="btn btn-link nav-link text-start" @onclick="Logout">
+                    <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Logga ut
+                </button>
+            </div> *@
         }
+        else
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
+                    <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Logga in
+                </NavLink>
+            </div>
+        }
+        @* <div class="nav-item px-3">
+            <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
+                <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Logga in
+            </NavLink>
+        </div> *@
 
 
 
@@ -40,11 +61,7 @@
             </NavLink>
         </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="login" Match="NavLinkMatch.All">
-                <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Logga in
-            </NavLink>
-        </div>
+        
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/products" Match="NavLinkMatch.All">
@@ -52,6 +69,15 @@
             </NavLink>
         </div>
 
+        @if(AuthState.Role != null && AuthState.Role == "admin")
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/view/users">
+                    <span class="bi bi-people" aria-hidden="true"></span> Alla användare
+                </NavLink>
+            </div>
+
+        }
 
     </nav>
 </div>
@@ -74,6 +100,12 @@
     public void Dispose()
     {
         AuthState.OnChange -= StateHasChanged;
+    }
+
+    private void Logout()
+    {
+        AuthState.Clear();
+        Navigation.NavigateTo("/");
     }
 
 }

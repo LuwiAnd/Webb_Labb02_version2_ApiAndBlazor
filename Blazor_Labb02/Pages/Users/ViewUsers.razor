@@ -1,0 +1,85 @@
+﻿@page "/view/users"
+@inject UserService UserService
+@inject NavigationManager Navigation
+@inject AuthState AuthState
+@using Blazor_Labb02.BlazorModels.ResponseDto
+
+<h3>Alla användare</h3>
+
+@if (AuthState.Role != "admin")
+{
+    <div class="alert alert-danger">
+        Du har inte behörighet att visa denna sida.
+    </div>
+}
+else
+{
+    <EditForm Model="@searchModel" OnValidSubmit="@HandleSearch">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <InputText @bind-Value="searchModel.Email" class="form-control" placeholder="Sök e-post" />
+            <button class="btn btn-primary mt-2" type="submit">Sök</button>
+            <button class="btn btn-secondary mt-2 ms-2" type="button" @onclick="LoadAllUsers">Rensa</button>
+        </div>
+    </EditForm>
+
+    @*  @if (users == null) *@
+    @if (users == null || !users.Any())
+    {
+        <p>Laddar användare...</p>
+    }
+    else if (!users.Any())
+    {
+        <p>Inga användare hittades.</p>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var u in users)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>@u.FirstName @u.LastName - @u.Email - @u.Role</span>
+                    <button class="btn btn-sm btn-secondary" @onclick="() => EditUser(u.UserID)">Redigera</button>
+                </li>
+            }
+        </ul>
+    }
+}
+
+@code {
+    private List<UserResponse>? users;
+    private SearchModel searchModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllUsers();
+    }
+
+    private async Task LoadAllUsers()
+    {
+        users = await UserService.GetAllUsers();
+    }
+
+    private async Task HandleSearch()
+    {
+        if (!string.IsNullOrWhiteSpace(searchModel.Email))
+        {
+            var user = await UserService.GetByEmail(searchModel.Email);
+            users = user is not null ? new List<UserResponse> { user } : new List<UserResponse>();
+        }
+        else
+        {
+            await LoadAllUsers();
+        }
+    }
+
+    private void EditUser(int userId)
+    {
+        Navigation.NavigateTo($"/profile/{userId}");
+    }
+
+    public class SearchModel
+    {
+        public string? Email { get; set; }
+    }
+}

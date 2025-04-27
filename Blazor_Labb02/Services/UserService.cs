@@ -38,17 +38,77 @@ namespace Blazor_Labb02.Services
             return null;
         }
 
-        //public async Task UpdateUser(int userId, UserResponse user)
-        public async Task UpdateUser(int userId, UserRequest request)
+        public async Task<UserResponse?> GetById(int id)
         {
-            var url = $"users/{userId}";
+            var url = $"users/{id}";
+
             var token = _authState.Token;
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await _http.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<UserResponse>();
+            }
+
+            return null;
+        }
+
+        public async Task<List<UserResponse>> GetAllUsers()
+        {
+            var url = $"users";
+
+            var token = _authState.Token;
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await _http.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<List<UserResponse>>() ?? new();
+            }
+
+            return new();
+        }
+
+        //public async Task UpdateUser(int userId, UserResponse user)
+        //public async Task UpdateUser(int userId, UserRequest request)
+        public async Task UpdateUser(UserRequest request)
+        {
+            //var url = $"users/{request.Id}";
+            var url = $"users";
+            var token = _authState.Token;
+
+
+            var updateRequest = new UpdateUserRequest
+            {
+                Id = request.Id,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                PhoneNumber = request.Phone,
+                HomeAddress = request.Address ?? "",
+                Role = request.Role
+            };
+
 
             //var request = new HttpRequestMessage(HttpMethod.Put, url)
             var httpRequest = new HttpRequestMessage(HttpMethod.Put, url)
             {
                 //Content = JsonContent.Create(user)
-                Content = JsonContent.Create(request)
+                //Content = JsonContent.Create(request)
+                Content = JsonContent.Create(updateRequest)
             };
 
             if (!string.IsNullOrWhiteSpace(token))
@@ -59,7 +119,7 @@ namespace Blazor_Labb02.Services
             //var response = await _http.SendAsync(request);
             var response = await _http.SendAsync(httpRequest);
 
-            Console.WriteLine($"Uppdaterar användare med id {userId} - status: {response.StatusCode}");
+            Console.WriteLine($"Uppdaterar användare med id {request.Id} - status: {response.StatusCode}");
             response.EnsureSuccessStatusCode();
         }
 
@@ -82,5 +142,26 @@ namespace Blazor_Labb02.Services
 
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task<UserRequest?> GetMyProfile()
+        {
+            var token = _authState.Token;
+            if (string.IsNullOrWhiteSpace(token))
+                return null;
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "users/me");
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _http.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var profile = await response.Content.ReadFromJsonAsync<UserRequest>();
+                return profile;
+            }
+
+            return null;
+        }
+
     }
 }
