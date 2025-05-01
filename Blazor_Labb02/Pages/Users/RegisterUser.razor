@@ -1,0 +1,62 @@
+﻿@page "/register"
+@inject UserService UserService
+@inject NavigationManager Navigation
+@using Blazor_Labb02.BlazorModels.RequestDto
+
+<h3>Registrera konto</h3>
+
+@if (success)
+{
+    <div class="alert alert-success">Registreringen lyckades!</div>
+}
+else
+{
+    <EditForm Model="@newUser" OnValidSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <InputText class="form-control mb-2" @bind-Value="newUser.FirstName" placeholder="Förnamn" />
+        <InputText class="form-control mb-2" @bind-Value="newUser.LastName" placeholder="Efternamn" />
+        <InputText class="form-control mb-2" @bind-Value="newUser.Email" placeholder="E-post" />
+        <InputText class="form-control mb-2" @bind-Value="newUser.Password" placeholder="Lösenord" type="password" />
+        <InputText class="form-control mb-2" @bind-Value="newUser.PhoneNumber" placeholder="Telefonnummer" />
+        <InputText class="form-control mb-2" @bind-Value="newUser.HomeAddress" placeholder="Adress" />
+
+        <button class="btn btn-primary">Registrera</button>
+    </EditForm>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+
+@code {
+    private RegisterUserRequest newUser = new();
+    private bool success = false;
+
+    private string? errorMessage;
+
+    private async Task HandleRegister()
+    {
+        Console.WriteLine($"Registrerar: {newUser.FirstName}, {newUser.PhoneNumber}, {newUser.HomeAddress}");
+
+        try
+        {
+            await UserService.RegisterUser(newUser);
+            success = true;
+            Navigation.NavigateTo("/login");
+        }
+        catch (HttpRequestException ex)
+        {
+            errorMessage = "Registreringen misslyckades. Kontrollera dina uppgifter.";
+            Console.WriteLine(ex);
+        }
+    }
+
+
+
+    
+
+}

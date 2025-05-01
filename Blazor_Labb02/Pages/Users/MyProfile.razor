@@ -70,8 +70,10 @@ else
 
     private async Task UpdateProfile()
     {
+        Console.WriteLine("Uppdaterar min profil.");
         if (user is not null)
         {
+            Console.WriteLine($"Uppdaterar: {user.FirstName}, {user.Phone}, {user.Address}");
             await UserService.UpdateMyProfile(user);
             Navigation.NavigateTo("/");
         }

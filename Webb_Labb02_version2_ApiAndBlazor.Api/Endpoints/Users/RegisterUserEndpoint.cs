@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Entities;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto;
+using Webb_Labb02_version2_ApiAndBlazor.Api.Models.ResponseDto;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces;
 
 namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
 {
-    public class RegisterUserEndpoint : Endpoint<RegisterUserRequest, User>
+    //public class RegisterUserEndpoint : Endpoint<RegisterUserRequest, User>
+    public class RegisterUserEndpoint : Endpoint<RegisterUserRequest, UserResponse>
     {
         private readonly IUnitOfWork _uow;
 
@@ -31,6 +33,17 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
 
         public override async Task HandleAsync(RegisterUserRequest req, CancellationToken ct)
         {
+
+            var existing = await _uow.Users.GetByEmailAsync(req.Email);
+            if (existing is not null)
+            {
+                AddError(r => r.Email, "E-postadressen är redan registrerad.");
+                await SendErrorsAsync(400, ct);
+                return;
+            }
+
+
+
             var hasher = new PasswordHasher<User>();
 
             var user = new User
@@ -50,11 +63,27 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
             await _uow.Users.AddAsync(user);
             await _uow.CompleteAsync();
 
+            //await SendCreatedAtAsync<GetUserByIdEndpoint>(
+            //    new { id = user.UserID },
+            //    user,
+            //    cancellation: ct
+            //);
+
             await SendCreatedAtAsync<GetUserByIdEndpoint>(
                 new { id = user.UserID },
-                user,
+                new UserResponse
+                {
+                    UserID = user.UserID,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email ?? "",
+                    PhoneNumber = user.PhoneNumber ?? "",
+                    HomeAddress = user.HomeAddress ?? "",
+                    Role = user.Role
+                },
                 cancellation: ct
             );
+
         }
     }
 }

@@ -113,7 +113,10 @@ namespace Blazor_Labb02.Services
 
             if (!string.IsNullOrWhiteSpace(token))
             {
-                httpRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                httpRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(
+                    "Bearer", 
+                    token
+                );
             }
 
             //var response = await _http.SendAsync(request);
@@ -156,12 +159,41 @@ namespace Blazor_Labb02.Services
 
             if (response.IsSuccessStatusCode)
             {
-                var profile = await response.Content.ReadFromJsonAsync<UserRequest>();
-                return profile;
+                //var profile = await response.Content.ReadFromJsonAsync<UserRequest>();
+                var profile = await response.Content.ReadFromJsonAsync<UserResponse>();
+
+                //return profile;
+                if(profile != null)
+                {
+                    return new UserRequest
+                    {
+                        Id = profile!.UserID,
+                        FirstName = profile.FirstName,
+                        LastName = profile.LastName,
+                        Email = profile.Email,
+                        Phone = profile.PhoneNumber,
+                        Address = profile.HomeAddress,
+                        Role = profile.Role
+                    };
+                }
+                
             }
 
             return null;
         }
+
+
+        public async Task RegisterUser(RegisterUserRequest request)
+        {
+            var response = await _http.PostAsJsonAsync("register", request);
+            if (!response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Registrering misslyckades: {content}");
+                throw new Exception("Registreringen misslyckades.");
+            }
+        }
+
 
     }
 }
