@@ -1,5 +1,6 @@
 ﻿@page "/products"
 @inject ProductService ProductService
+@inject CartService CartService
 @inject AuthState AuthState
 @inject IJSRuntime JS
 @using Blazor_Labb02.Services
@@ -58,6 +59,12 @@ else if(AuthState.Role == "admin")
                 @* Status: @(product.IsDiscontinued ? "Utgått" : "Tillgänglig") Detta måste ändras *@
                 Status: @GetStatusText(product.Status) <br />
                 <strong>Roll: @AuthState.Role </strong>
+
+                @if (product.StockQuantity > 0)
+                {
+                    <button class="btn btn-success" @onclick="() => AddToCart(product.Id)">Lägg i kundvagn</button>
+                }
+
                 <button class="btn btn-secondary ms-2" type="button" @onclick="() => EditProduct(product.Number)">Redigera</button>
                 <button class="btn btn-secondary ms-2" type="button" @onclick="() => DeleteProduct(product.Number)">Ta bort</button>
             </li>
@@ -75,7 +82,12 @@ else
             Kategori: @product.Category<br />
             @* Status: @(product.IsDiscontinued ? "Utgått" : "Tillgänglig") Detta måste ändras *@
             Status: @GetStatusText(product.Status) <br />
-            
+
+            @if (product.StockQuantity > 0)
+            {
+                <button class="btn btn-success" @onclick="() => AddToCart(product.Id)">Lägg i kundvagn</button>
+            }
+
         </li>
     }
 </ul>
@@ -151,4 +163,18 @@ else
         }
     }
 
+
+    private async Task AddToCart(int productId)
+    {
+        try
+        {
+            await CartService.AddToCart(productId);
+            await JS.InvokeVoidAsync("alert", "Produkten har lagts till i kundvagnen.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Fel vid lägg till i kundvagn: " + ex.Message);
+            await JS.InvokeVoidAsync("alert", "Det gick inte att lägga till produkten.");
+        }
+    }
 }

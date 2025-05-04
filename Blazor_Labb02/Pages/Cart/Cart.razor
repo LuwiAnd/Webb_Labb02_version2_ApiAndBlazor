@@ -1,0 +1,49 @@
+﻿@page "/cart"
+@inject CartService CartService
+
+<h3>Din kundvagn</h3>
+
+@if (items == null)
+{
+    <p>Laddar kundvagn...</p>
+}
+else if (!items.Any())
+{
+    <p>Kundvagnen är tom.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr><th>Produkt</th><th>Antal</th><th>Pris</th><th></th></tr>
+        </thead>
+        <tbody>
+            @foreach (var item in items)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.Quantity</td>
+                    <td>@(item.Price * item.Quantity) kr</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => Remove(item.ProductID)">Ta bort</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<CartItemResponse>? items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await CartService.GetCart();
+    }
+
+    private async Task Remove(int productId)
+    {
+        await CartService.RemoveFromCart(productId);
+        items = await CartService.GetCart(); // Uppdatera listan efter borttagning
+    }
+}

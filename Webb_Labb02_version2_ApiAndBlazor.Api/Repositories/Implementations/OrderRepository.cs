@@ -40,6 +40,15 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
                 .FirstOrDefaultAsync(o => o.ID == id);
         }
 
+        public async Task<Order?> GetUnhandledOrderAsync(int userId)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .FirstOrDefaultAsync(o => o.UserID == userId && o.OrderStatus == "unhandled");
+        }
+
+
         public async Task AddAsync(Order order)
         {
             _context.Orders.Add(order);

@@ -15,6 +15,9 @@ namespace Blazor_Labb02.BlazorModels.RequestDto
         public decimal? Price { get; set; }
         public string? Category { get; set; }
         public ProductStatus? Status { get; set; }
+
+        public int StockQuantity { get; set; }
+
     }
 }
 

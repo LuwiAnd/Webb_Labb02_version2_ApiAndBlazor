@@ -51,6 +51,8 @@
         Console.WriteLine("HandleLogin körs!");
         Console.WriteLine("HandleLogin körs!");
 
+        isSubmitting = true;
+        ErrorMessage = "";
         try
         {
 
@@ -86,8 +88,11 @@
         {
             ErrorMessage = "Något gick fel: " + ex.Message;
         }
+        finally
+        {
+            isSubmitting = false;
+        }
 
-        isSubmitting = true;
     }
 
 }

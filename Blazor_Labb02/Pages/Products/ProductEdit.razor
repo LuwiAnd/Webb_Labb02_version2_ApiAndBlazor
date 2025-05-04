@@ -53,6 +53,13 @@ else
             <ValidationMessage For="@(() => product.Status)" />
         </div>
 
+        <div class="mb-3">
+            <label>Lagersaldo:</label>
+            <InputNumber class="form-control" @bind-Value="product.StockQuantity" />
+            <ValidationMessage For="@(() => product.StockQuantity)" />
+        </div>
+
+
         <button type="submit" class="btn btn-primary">Spara ändringar</button>
     </EditForm>
 }
@@ -91,7 +98,8 @@ else
                     Description = product.Description,
                     Price = product.Price,
                     Category = product.Category,
-                    Status = product.Status
+                    Status = product.Status,
+                    StockQuantity = product.StockQuantity
                 };
 
             await ProductService.UpdateProduct(product.Id, updateRequest);

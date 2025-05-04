@@ -27,4 +27,5 @@ public class ProductResponse
     [Required]
     public ProductStatus Status { get; set; } = ProductStatus.Available;
 
+    public int StockQuantity { get; set; }
 }

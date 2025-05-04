@@ -16,5 +16,7 @@
         public decimal Price { get; set; }
         public string Category { get; set; } = string.Empty;
         public ProductStatus Status { get; set; } = ProductStatus.Available;
+
+        public int StockQuantity { get; set; } = 0;
     }
 }

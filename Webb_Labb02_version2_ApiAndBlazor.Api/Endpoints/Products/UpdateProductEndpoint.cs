@@ -57,6 +57,9 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
             if (req.Status.HasValue)
                 product.Status = req.Status.Value;
 
+            if (req.StockQuantity.HasValue)
+                product.StockQuantity = req.StockQuantity.Value;
+
 
             await _uow.Products.UpdateAsync(product);
             await _uow.CompleteAsync();
