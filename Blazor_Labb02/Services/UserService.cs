@@ -99,7 +99,8 @@ namespace Blazor_Labb02.Services
                 Email = request.Email,
                 PhoneNumber = request.Phone,
                 HomeAddress = request.Address ?? "",
-                Role = request.Role
+                Role = request.Role,
+                Password = request.Password
             };
 
 

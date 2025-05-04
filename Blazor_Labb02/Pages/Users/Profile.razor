@@ -60,6 +60,15 @@ else
             <InputText class="form-control" @bind-Value="user.Role" disabled />
         </div>
 
+        @if (UserId.HasValue && AuthState.Role == "admin")
+        {
+            <div class="mb-3">
+                <label>Ny lösenord:</label>
+                <InputText class="form-control" @bind-Value="newPassword" type="password" />
+            </div>
+        }
+
+
         <button class="btn btn-primary">Spara ändringar</button>
     </EditForm>
 }
@@ -68,6 +77,9 @@ else
 @code {
     [Parameter] public int? UserId { get; set; }
     private UserRequest? user;
+
+    private string? newPassword;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -113,6 +125,12 @@ else
     {
         if (user is not null)
         {
+
+            if (!string.IsNullOrWhiteSpace(newPassword))
+            {
+                user.Password = newPassword;
+            }
+
             if (UserId.HasValue)
             {
                 // await UserService.UpdateUser(user.Id, user);

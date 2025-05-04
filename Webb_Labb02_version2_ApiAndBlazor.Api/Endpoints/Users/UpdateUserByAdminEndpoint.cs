@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Microsoft.AspNetCore.Identity;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Entities;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto;
 using Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces;
@@ -44,6 +45,14 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Users
             user.PhoneNumber = req.PhoneNumber;
             user.HomeAddress = req.HomeAddress;
             user.Role = req.Role ?? user.Role;
+
+
+            if (!string.IsNullOrWhiteSpace(req.Password))
+            {
+                var hasher = new PasswordHasher<User>();
+                user.PasswordHash = hasher.HashPassword(user, req.Password);
+            }
+
 
             await _uow.CompleteAsync();
             await SendOkAsync(user, ct);

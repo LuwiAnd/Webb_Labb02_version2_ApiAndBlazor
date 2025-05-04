@@ -24,5 +24,7 @@ namespace Blazor_Labb02.BlazorModels.RequestDto
         public string? Address { get; set; }
 
         public string Role { get; set; } = "user";
+
+        public string? Password { get; set; }
     }
 }
