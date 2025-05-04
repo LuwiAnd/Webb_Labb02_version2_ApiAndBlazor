@@ -25,6 +25,13 @@ else
         <ValidationSummary />
 
         <div class="mb-3">
+            <label>Produktnummer:</label>
+            <InputNumber class="form-control" @bind-Value="product.Number" />
+            <ValidationMessage For="@(() => product.Number)" />
+        </div>
+
+
+        <div class="mb-3">
             <label>Produktnamn:</label>
             <InputText class="form-control" @bind-Value="product.Name" />
             <ValidationMessage For="@(() => product.Name)" />
@@ -94,6 +101,7 @@ else
         {
             var updateRequest = new UpdateProductRequest
                 {
+                    ProductNumber = product.Number,
                     Name = product.Name,
                     Description = product.Description,
                     Price = product.Price,

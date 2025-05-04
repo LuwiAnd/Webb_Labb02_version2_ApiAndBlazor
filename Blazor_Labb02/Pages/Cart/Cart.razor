@@ -1,5 +1,7 @@
 ﻿@page "/cart"
 @inject CartService CartService
+@inject IJSRuntime JS
+
 
 <h3>Din kundvagn</h3>
 
@@ -31,6 +33,12 @@ else
             }
         </tbody>
     </table>
+
+    <div class="mt-4">
+        <button class="btn btn-success me-2" @onclick="Checkout">Genomför beställning</button>
+        <button class="btn btn-danger" @onclick="ClearCart">Töm kundvagn</button>
+    </div>
+
 }
 
 @code {
@@ -44,6 +52,41 @@ else
     private async Task Remove(int productId)
     {
         await CartService.RemoveFromCart(productId);
-        items = await CartService.GetCart(); // Uppdatera listan efter borttagning
+        items = await CartService.GetCart(); // Uppdaterar listan efter borttagning av produkt.
     }
+
+
+
+    private async Task Checkout()
+    {
+        try
+        {
+            await CartService.Checkout();
+            await JS.InvokeVoidAsync("alert", "Beställningen har genomförts!");
+            items = new();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Fel vid beställning: " + ex.Message);
+            await JS.InvokeVoidAsync("alert", "Det gick inte att genomföra beställningen.");
+        }
+    }
+
+    private async Task ClearCart()
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", "Vill du verkligen tömma kundvagnen?");
+        if (!confirmed) return;
+
+        try
+        {
+            await CartService.ClearCart();
+            items = new(); // töm listan lokalt
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Fel vid tömning: " + ex.Message);
+            await JS.InvokeVoidAsync("alert", "Det gick inte att tömma kundvagnen.");
+        }
+    }
+
 }

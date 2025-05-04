@@ -12,5 +12,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto
         public ProductStatus? Status { get; set; }
 
         public int? StockQuantity { get; set; }
+
+        public int? ProductNumber { get; set; }
     }
 }

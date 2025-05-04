@@ -77,6 +77,11 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
             return await _context.Products.FirstOrDefaultAsync(p => p.Number == productNumber);
         }
 
+        public async Task<bool> AnyWithProductNumberAsync(int productNumber)
+        {
+            return await _context.Products.AnyAsync(p => p.Number == productNumber);
+        }
+
 
     }
 }

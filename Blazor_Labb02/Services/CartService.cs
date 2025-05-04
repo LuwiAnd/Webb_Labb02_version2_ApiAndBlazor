@@ -64,7 +64,7 @@ namespace Blazor_Labb02.Services
 
         public async Task RemoveFromCart(int productId)
         {
-            var request = new HttpRequestMessage(HttpMethod.Delete, $"cart/remove/{productId}");
+            var request = new HttpRequestMessage(HttpMethod.Delete, $"cart/item/{productId}");
             AddAuthHeader(request);
 
             var response = await _http.SendAsync(request);
@@ -79,5 +79,17 @@ namespace Blazor_Labb02.Services
             var response = await _http.SendAsync(request);
             response.EnsureSuccessStatusCode();
         }
+
+
+
+        public async Task Checkout()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "cart/checkout");
+            AddAuthHeader(request);
+
+            var response = await _http.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+        }
+
     }
 }

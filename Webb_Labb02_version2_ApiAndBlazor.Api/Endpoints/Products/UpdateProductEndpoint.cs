@@ -41,7 +41,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
                 return;
             }
 
-            // Endast uppdatera om värdet inte är null eller tomt
+
             if (!string.IsNullOrWhiteSpace(req.Name))
                 product.Name = req.Name;
 
@@ -59,6 +59,21 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
 
             if (req.StockQuantity.HasValue)
                 product.StockQuantity = req.StockQuantity.Value;
+
+
+            if (req.ProductNumber.HasValue && req.ProductNumber.Value != product.Number)
+            {
+                var exists = await _uow.Products.AnyWithProductNumberAsync(req.ProductNumber.Value);
+                if (exists)
+                {
+                    AddError(r => r.ProductNumber, "Det finns redan en produkt med detta produktnummer.");
+                    await SendErrorsAsync(400, ct);
+                    return;
+                }
+
+                product.Number = req.ProductNumber.Value;
+            }
+
 
 
             await _uow.Products.UpdateAsync(product);

@@ -15,6 +15,11 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Interfaces
 
         Task<Product?> GetByProductNumberAsync(int productNumber);
 
+        // Kontrollerar att det inte finns någon produkt i databasen med ett visst 
+        // produktnummer. Används för att kunna uppdatera produktnummer i ProductEdit.razor.
+        Task<bool> AnyWithProductNumberAsync(int productNumber);
+
+
 
     }
 }

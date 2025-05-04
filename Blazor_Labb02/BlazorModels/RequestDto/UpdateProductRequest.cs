@@ -18,6 +18,8 @@ namespace Blazor_Labb02.BlazorModels.RequestDto
 
         public int StockQuantity { get; set; }
 
+        public int? ProductNumber { get; set; }
+
     }
 }
 
