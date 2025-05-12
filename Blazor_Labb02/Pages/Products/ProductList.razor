@@ -54,13 +54,15 @@ else if(AuthState.Role == "admin")
         {
             <li class="list-group-item">
                 <strong>@product.Name</strong> – @product.Price kr<br />
+                Produktnummer: <strong>@product.Number</strong><br />
                 @product.Description<br />
                 Kategori: @product.Category<br />
                 @* Status: @(product.IsDiscontinued ? "Utgått" : "Tillgänglig") Detta måste ändras *@
                 Status: @GetStatusText(product.Status) <br />
-                <strong>Roll: @AuthState.Role </strong>
+                <strong>Lagersaldo:</strong> @product.StockQuantity st<br />
+                @* <strong>Roll: @AuthState.Role </strong><br /> *@
 
-                @if (product.StockQuantity > 0)
+                @if (product.StockQuantity > 0 && product.Status == ProductStatus.Available)
                 {
                     <button class="btn btn-success" @onclick="() => AddToCart(product.Id)">Lägg i kundvagn</button>
                 }
@@ -78,12 +80,13 @@ else
     {
         <li class="list-group-item">
             <strong>@product.Name</strong> – @product.Price kr<br />
+            Produktnummer: <strong>@product.Number</strong><br />
             @product.Description<br />
             Kategori: @product.Category<br />
             @* Status: @(product.IsDiscontinued ? "Utgått" : "Tillgänglig") Detta måste ändras *@
             Status: @GetStatusText(product.Status) <br />
 
-            @if (product.StockQuantity > 0)
+            @if (product.StockQuantity > 0 && product.Status == ProductStatus.Available)
             {
                 <button class="btn btn-success" @onclick="() => AddToCart(product.Id)">Lägg i kundvagn</button>
             }

@@ -23,8 +23,8 @@ else
         </div>
     </EditForm>
 
-    @*  @if (users == null) *@
-    @if (users == null || !users.Any())
+    
+    @if (users == null)
     {
         <p>Laddar användare...</p>
     }
@@ -64,8 +64,11 @@ else
     {
         if (!string.IsNullOrWhiteSpace(searchModel.Email))
         {
-            var user = await UserService.GetByEmail(searchModel.Email);
-            users = user is not null ? new List<UserResponse> { user } : new List<UserResponse>();
+            // var user = await UserService.GetByEmail(searchModel.Email);
+            // users = user is not null ? new List<UserResponse> { user } : new List<UserResponse>();
+            users = await UserService.SearchByPartialEmail(searchModel.Email);
+
+            Console.WriteLine($"Antal hittade användare: {users.Count}");
         }
         else
         {

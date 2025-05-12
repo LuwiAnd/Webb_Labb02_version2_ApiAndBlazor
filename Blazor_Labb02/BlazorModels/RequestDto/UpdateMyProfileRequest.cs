@@ -1,4 +1,4 @@
-﻿namespace Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto
+﻿namespace Blazor_Labb02.BlazorModels.RequestDto
 {
     public class UpdateMyProfileRequest
     {
@@ -10,3 +10,4 @@
         public string? Password { get; set; }
     }
 }
+

@@ -27,11 +27,22 @@ else
                     <td>@item.Quantity</td>
                     <td>@(item.Price * item.Quantity) kr</td>
                     <td>
+                        <button class="btn btn-sm btn-outline-secondary me-1" @onclick="() => DecreaseQuantity(item)">-</button>
+                        <button class="btn btn-sm btn-outline-secondary me-2" @onclick="() => IncreaseQuantity(item)">+</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => Remove(item.ProductID)">Ta bort</button>
                     </td>
                 </tr>
             }
         </tbody>
+
+        <tfoot>
+            <tr>
+                <td colspan="2" class="text-end fw-bold">Totalt:</td>
+                <td class="fw-bold">@TotalAmount kr</td>
+                <td></td>
+            </tr>
+        </tfoot>
+
     </table>
 
     <div class="mt-4">
@@ -44,10 +55,42 @@ else
 @code {
     private List<CartItemResponse>? items;
 
+    // Totalbeloppet längst ner i kundvagnstabellen.
+    private decimal TotalAmount => items?.Sum(i => i.Price * i.Quantity) ?? 0;
+
+
     protected override async Task OnInitializedAsync()
     {
         items = await CartService.GetCart();
     }
+
+
+    private async Task DecreaseQuantity(CartItemResponse item)
+    {
+        if (item.Quantity <= 1)
+        {
+            await Remove(item.ProductID);
+            return;
+        }
+
+        await CartService.UpdateQuantity(item.ProductID, item.Quantity - 1);
+        items = await CartService.GetCart();
+    }
+
+    private async Task IncreaseQuantity(CartItemResponse item)
+    {
+        if (item.Quantity >= item.StockQuantity)
+        {
+            await JS.InvokeVoidAsync("alert", "Du kan inte lägga till fler än vad som finns i lager.");
+            return;
+        }
+
+        await CartService.UpdateQuantity(item.ProductID, item.Quantity + 1);
+        items = await CartService.GetCart();
+    }
+
+
+
 
     private async Task Remove(int productId)
     {

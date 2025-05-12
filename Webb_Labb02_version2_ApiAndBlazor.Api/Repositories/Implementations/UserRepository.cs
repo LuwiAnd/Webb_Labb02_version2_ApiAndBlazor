@@ -29,6 +29,18 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<IEnumerable<User>> SearchByPartialEmailAsync(string emailFragment)
+        {
+            //För debugging
+            //var answer = await _context.Users
+            //    .Where(u => u.Email != null && u.Email.Contains(emailFragment))
+            //    .ToListAsync();
+            return await _context.Users
+                .Where(u => u.Email != null && u.Email.Contains(emailFragment))
+                .ToListAsync();
+        }
+
+
         public async Task AddAsync(User user)
         {
             _context.Users.Add(user);

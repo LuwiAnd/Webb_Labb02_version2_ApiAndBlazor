@@ -38,6 +38,24 @@ namespace Blazor_Labb02.Services
             return null;
         }
 
+
+        public async Task<List<UserResponse>> SearchByPartialEmail(string fragment)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"users/search/fragment?partialEmail={fragment}");
+
+            var token = _authState.Token;
+            if (!string.IsNullOrWhiteSpace(token))
+            {
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var response = await _http.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<UserResponse>>() ?? new();
+        }
+
+
+
         public async Task<UserResponse?> GetById(int id)
         {
             var url = $"users/{id}";
@@ -130,9 +148,20 @@ namespace Blazor_Labb02.Services
 
         public async Task UpdateMyProfile(UserRequest updatedUser)
         {
+            var updateRequest = new UpdateMyProfileRequest
+            {
+                FirstName = updatedUser.FirstName,
+                LastName = updatedUser.LastName,
+                Email = updatedUser.Email,
+                PhoneNumber = updatedUser.Phone,
+                HomeAddress = updatedUser.Address,
+                Password = updatedUser.Password
+            };
+
             var request = new HttpRequestMessage(HttpMethod.Put, "users/me")
             {
-                Content = JsonContent.Create(updatedUser)
+                //Content = JsonContent.Create(updatedUser)
+                Content = JsonContent.Create(updateRequest)
             };
 
             var token = _authState.Token;

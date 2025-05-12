@@ -22,5 +22,10 @@ namespace Blazor_Labb02.BlazorModels.RequestDto
 
         [Required]
         public ProductStatus Status { get; set; } = ProductStatus.Available;
+
+        [Range(0, int.MaxValue, ErrorMessage = "Lagersaldo får inte vara negativt.")]
+        public int StockQuantity { get; set; } = 0;
+
+
     }
 }

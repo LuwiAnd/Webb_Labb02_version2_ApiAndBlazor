@@ -57,8 +57,20 @@ else
 
         <div class="mb-3">
             <label>Roll:</label>
-            <InputText class="form-control" @bind-Value="user.Role" disabled />
+            @if (UserId.HasValue && AuthState.Role == "admin" && UserId != AuthState.UserId)
+            {
+                <InputSelect class="form-control" @bind-Value="user.Role">
+                    <option value="user">user</option>
+                    <option value="admin">admin</option>
+                </InputSelect>
+            }
+            else
+            {
+                <InputText class="form-control" @bind-Value="user.Role" disabled />
+            }
         </div>
+
+
 
         @if (UserId.HasValue && AuthState.Role == "admin")
         {
@@ -90,15 +102,15 @@ else
             if (loadedUser != null)
             {
                 user = new UserRequest
-                    {
-                        Id = loadedUser.UserID,
-                        FirstName = loadedUser.FirstName,
-                        LastName = loadedUser.LastName,
-                        Email = loadedUser.Email,
-                        Phone = loadedUser.PhoneNumber,
-                        Address = loadedUser.HomeAddress,
-                        Role = loadedUser.Role
-                    };
+                {
+                    Id = loadedUser.UserID,
+                    FirstName = loadedUser.FirstName,
+                    LastName = loadedUser.LastName,
+                    Email = loadedUser.Email,
+                    Phone = loadedUser.PhoneNumber,
+                    Address = loadedUser.HomeAddress,
+                    Role = loadedUser.Role
+                };
             }
         }
         else if (!string.IsNullOrWhiteSpace(AuthState.Email))

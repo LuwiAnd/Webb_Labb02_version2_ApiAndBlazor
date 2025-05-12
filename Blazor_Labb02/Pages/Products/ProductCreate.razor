@@ -51,6 +51,13 @@ else
             <ValidationMessage For="@(() => newProduct.Status)" />
         </div>
 
+        <div class="mb-3">
+            <label>Lagersaldo:</label>
+            <InputNumber class="form-control" @bind-Value="newProduct.StockQuantity" />
+            <ValidationMessage For="@(() => newProduct.StockQuantity)" />
+        </div>
+
+
         <button type="submit" class="btn btn-success">Skapa</button>
     </EditForm>
 }
