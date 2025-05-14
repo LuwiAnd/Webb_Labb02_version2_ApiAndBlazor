@@ -1,0 +1,50 @@
+﻿@page "/admin/order-history"
+@inject OrderService OrderService
+@inject AuthState AuthState
+
+<h3>Orderhistorik för alla användare</h3>
+
+@if (AuthState.Role != "admin")
+{
+    <div class="alert alert-danger">Endast administratörer har tillgång till denna sida.</div>
+}
+else if (orders == null)
+{
+    <p>Laddar ordrar...</p>
+}
+else if (!orders.Any())
+{
+    <p>Inga ordrar hittades.</p>
+}
+else
+{
+    @foreach (var order in orders)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>Order-ID:</strong> @order.OrderID |
+                <strong>Kund-ID:</strong> @order.UserID |
+                <strong>Datum:</strong> @order.OrderDate.ToString("yyyy-MM-dd") |
+                <strong>Status:</strong> @order.OrderStatus |
+                <strong>Totalt:</strong> @order.TotalAmount kr
+            </div>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in order.Items)
+                {
+                    <li class="list-group-item">
+                        Produkt-ID: @item.ProductID – Antal: @item.Quantity – Pris: @item.Price kr
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+}
+
+@code {
+    private List<OrderResponse>? orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await OrderService.GetAllOrders();
+    }
+}

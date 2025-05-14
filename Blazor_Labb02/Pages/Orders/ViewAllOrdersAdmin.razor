@@ -1,0 +1,81 @@
+﻿@page "/admin/orders"
+@inject OrderService OrderService
+@inject AuthState AuthState
+@inject NavigationManager Navigation
+
+@using Blazor_Labb02.BlazorModels.ResponseDto
+
+<h3>Alla ordrar</h3>
+
+@if (AuthState.Role != "admin")
+{
+    <div class="alert alert-danger">
+        Du har inte behörighet att visa denna sida.
+    </div>
+}
+else if (orders == null)
+{
+    <p>Laddar orderhistorik...</p>
+}
+else if (!orders.Any())
+{
+    <p>Inga ordrar hittades.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order-ID</th>
+                <th>Användar-ID</th>
+                <th>E-post</th>
+                <th>Datum</th>
+                <th>Status</th>
+                <th>Totalt</th>
+                <th>Produkter</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.OrderID</td>
+                    <td>@order.UserID</td>
+                    <td>@order.Email</td>
+                    <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                    <td>@order.OrderStatus</td>
+                    <td>@order.TotalAmount kr</td>
+                    <td>
+                        <ul class="list-unstyled">
+                            @foreach (var item in order.Items)
+                            {
+                                <li>
+                                    Produkt-ID: @item.ProductID, Antal: @item.Quantity, Pris/st: @item.Price kr
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<OrderResponse>? orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (AuthState.Role == "admin")
+        {
+            try
+            {
+                orders = await OrderService.GetAllOrders();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fel vid hämtning av ordrar: {ex.Message}");
+            }
+        }
+    }
+}

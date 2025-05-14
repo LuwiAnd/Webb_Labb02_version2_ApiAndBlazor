@@ -38,6 +38,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Endpoints.Orders
             {
                 OrderID = order.ID,
                 UserID = order.UserID,
+                Email = order.User?.Email ?? "",
                 OrderDate = order.OrderDate,
                 OrderStatus = order.OrderStatus,
                 TotalAmount = order.TotalAmount,

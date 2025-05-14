@@ -17,6 +17,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Repositories.Implementations
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
             return await _context.Orders
+                .Include(o => o.User)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                 .Include(o => o.User)

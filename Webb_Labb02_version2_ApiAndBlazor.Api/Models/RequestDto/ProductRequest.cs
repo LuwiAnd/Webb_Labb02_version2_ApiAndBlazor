@@ -11,5 +11,7 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Models.RequestDto
         public string Category { get; set; } = string.Empty;
         //public string ProductStatus { get; set; } = string.Empty;
         public ProductStatus Status { get; set; } = ProductStatus.Available;
+
+        public int StockQuantity { get; set; } = 0;
     }
 }

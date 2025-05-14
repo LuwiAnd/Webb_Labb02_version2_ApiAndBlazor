@@ -37,7 +37,8 @@ namespace Webb_Labb02_version2_ApiAndBlazor.Api.Endpoints.Products
                 Description = req.Description,
                 Price = req.Price,
                 Category = req.Category,
-                Status = req.Status
+                Status = req.Status,
+                StockQuantity = req.StockQuantity
             };
 
             await _repository.AddAsync(product);
